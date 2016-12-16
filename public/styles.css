@@ -1,0 +1,71 @@
+.app-bar-user-img{
+    position: absolute;
+    left: 55px;
+}
+.app-bar-user-info{
+    position: absolute;
+    left: 115px;
+    top: 15px;
+    font-family: Roboto;
+    color: white;
+}
+
+.panel {
+    width: 100%;
+}
+
+.panel-list {
+    /*width: 450px;*/
+    width: 30%;
+    float:left;
+}
+.panel-list-header {
+    background: #5c6bc0;
+    height: 48px;
+}
+.panel-list-length {
+    border-radius: 25px;
+    background: #e0e0e0;
+    padding: 5px 15px 5px 15px;
+}
+
+
+.panel-list-container {
+  height: 660px;
+  overflow: auto;
+}
+
+.panel-list-add {
+    float:right;
+}
+
+.panel-tab {
+    width: 70%;
+    float:right;
+}
+
+.panel-tab-content{
+    margin: 20px;
+}
+
+.panel-tab-employee-left{
+    float: left;
+}
+
+.panel-tab-employee-right{
+    float: right;
+}
+.panel-tab-employee-img{
+    margin: 20px;
+}
+
+
+
+
+
+
+
+/*
+#3F51B5 indigo500
+#5c6bc0 indigo400
+*/
