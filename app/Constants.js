@@ -1,4 +1,4 @@
-import {indigo500, indigo400, white} from 'material-ui/styles/colors';
+import {indigo500, indigo400, white, red} from 'material-ui/styles/colors';
 
 export default {
     themeIndigo500:{
@@ -17,5 +17,5 @@ export default {
     },
     colorWhite: {
         color: white
-    }
+    },
 };

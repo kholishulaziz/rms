@@ -10,14 +10,9 @@
     color: white;
 }
 
-.panel {
-    width: 100%;
-}
-
 .panel-list {
-    /*width: 450px;*/
-    width: 30%;
-    float:left;
+    position: absolute;
+    width: 450px;
 }
 .panel-list-header {
     background: #5c6bc0;
@@ -28,42 +23,41 @@
     background: #e0e0e0;
     padding: 5px 15px 5px 15px;
 }
-
-
 .panel-list-container {
-  height: 660px;
-  overflow: auto;
+    height: 670px;
+    overflow: auto;
 }
-
-.panel-list-add {
-    float:right;
-}
-
 .panel-tab {
-    width: 70%;
-    float:right;
+    padding-left: 450px;
 }
-
-.panel-tab-content{
-    margin: 20px;
-}
-
-.panel-tab-employee-left{
+.content{
+    margin: 20px 35px 20px 35px;
     float: left;
 }
 
-.panel-tab-employee-right{
+.panel-list-add {
+    position: absolute;
+    right: 10px;
+    top: 450px;
+}
+.foot {
+    position: absolute;
+    height: 48px;
+    width: calc(100% - 466px);
+    bottom: 0px;
+    padding-left: 450px;
+    background: #5c6bc0;
+    z-index: 1;
+}
+.foot-btn {
     float: right;
+    vertical-align: middle;
+    margin-right: 50px;
 }
-.panel-tab-employee-img{
-    margin: 20px;
+
+.contentDialog {
+    min-height: 600px;
 }
-
-
-
-
-
-
 
 /*
 #3F51B5 indigo500

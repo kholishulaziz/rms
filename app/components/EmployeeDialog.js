@@ -1,10 +1,10 @@
 import React, {Component} from 'react';
 
+import Avatar from 'material-ui/Avatar';
 import {indigo400} from 'material-ui/styles/colors';
 import DatePicker from 'material-ui/DatePicker';
 import Dialog from 'material-ui/Dialog';
 import FloatingActionButton from 'material-ui/FloatingActionButton';
-import FlatButton from 'material-ui/FlatButton';
 import MenuItem from 'material-ui/MenuItem';
 import RaisedButton from 'material-ui/RaisedButton';
 import SelectField from 'material-ui/SelectField';
@@ -25,8 +25,9 @@ class EmployeeDialog extends Component {
     constructor(props, context) {
         super(props, context);
         this.state = {
-            dialogIsOpen: false,
+            createDialogIsOpen: false,
             stepIndex: 0,
+            errorTextRequired: '',
             firstName: '',
             lastName: '',
             gender: '',
@@ -48,12 +49,29 @@ class EmployeeDialog extends Component {
 
     handleOpenDialog() {
         this.setState({
-            dialogIsOpen: true,
+            createDialogIsOpen: true,
         });
     }
     handleCloseDialog() {
         this.setState({
-            dialogIsOpen: false,
+            createDialogIsOpen: false,
+            stepIndex: 0,
+            errorTextRequired: '',
+            firstName: '',
+            lastName: '',
+            gender: '',
+            dob: new Object,
+            nationality: '',
+            maritalStatus: '',
+            phone: '',
+            subDivision: '',
+            status: '',
+            suspendDate: new Object,
+            hireDate: new Object,
+            grade: '',
+            division: '',
+            email: '',
+            office: ''
         });
     }
     handlePrev() {
@@ -64,9 +82,44 @@ class EmployeeDialog extends Component {
     };
     handleNext() {
         const {stepIndex} = this.state;
-        this.setState({
-            stepIndex: stepIndex + 1,
-        });
+        var errorTextRequired = false;
+        switch (stepIndex) {
+            case 0:
+                if (this.state.firstName=="" || this.state.lastName=="" || this.state.gender==""
+                        /*|| this.state.dob=="" ||*/ || this.state.phone=="" || this.state.subDivision==""
+                        || this.state.grade=="" || this.state.division=="" || this.state.email==""
+                        ){
+                    errorTextRequired = true;
+                }
+                break;
+            case 1:
+                break;
+            case 2:
+                break;
+            case 3:
+                break;
+            case 4:
+                break;
+            case 5:
+                if (this.state.office==""){
+                    errorTextRequired = true;
+                }
+                break;
+        }
+
+        if ( errorTextRequired == true){
+            this.setState({
+                errorTextRequired: 'This field is required!',
+            });
+        } else {
+            this.setState({
+                stepIndex: stepIndex + 1,
+                errorTextRequired: '',
+            });
+            if (stepIndex==5){
+                this.handleFinish();
+            }
+        }
     };
     handleFinish(){
         var id = this.state.firstName +" "+ this.state.lastName;
@@ -89,102 +142,25 @@ class EmployeeDialog extends Component {
              office: this.state.office
         }
         this.handleAddEmployee(newEmployee);
-        this.setState({
-             dialogIsOpen: false,
-             stepIndex: 0,
-             firstName: '',
-             lastName: '',
-             gender: '',
-             dob: new Object,
-             nationality: '',
-             maritalStatus: '',
-             phone: '',
-             subDivision: '',
-             status: '',
-             suspendDate: new Object,
-             hireDate: new Object,
-             grade: '',
-             division: '',
-             email: '',
-             office: ''
-         });
+        this.handleCloseDialog();
     }
 
-    handleChangeFirstName(event) {
-        this.setState({
-            firstName: event.target.value
-        });
-    }
-    handleChangeLastName(event) {
-        this.setState({
-            lastName: event.target.value
-        });
-    }
-    handleChangeGender(event, index, value) {
-        this.setState({
-            gender: value
-        });
-    }
-    handleChangeDOB(event, date) {
-        this.setState({
-            dob: date
-        });
-    }
-    handleChangeNationality(event) {
-        this.setState({
-            nationality: event.target.value
-        });
-    }
-    handleChangeMaritalStatus(event, index, value) {
-        this.setState({
-            maritalStatus: value
-        });
-    }
-    handleChangePhone(event) {
-        this.setState({
-            phone: event.target.value
-        });
+    handleChangeValue(event, type) {
+        var nextState = {};
+        nextState[type] = event.target.value;
+        this.setState(nextState);
     }
 
-    handleChangeSubDivision(event) {
-        this.setState({
-            subDivision: event.target.value
-        });
+    handleChangeSelectValue(event, index, value, type) {
+        var nextState = {};
+        nextState[type] = value;
+        this.setState(nextState);
     }
-    handleChangeStatus(event, index, value) {
-        this.setState({
-            status: value
-        });
-    }
-    handleChangeSuspendDate(event, date) {
-        this.setState({
-            suspendDate: date
-        });
-    }
-    handleChangeHireDate(event, date) {
-        this.setState({
-            hireDate: date
-        });
-    }
-    handleChangeGrade(event, index, value) {
-        this.setState({
-            grade: value
-        });
-    }
-    handleChangeDivision(event, index, value) {
-        this.setState({
-            division: value
-        });
-    }
-    handleChangeEmail(event) {
-        this.setState({
-            email: event.target.value
-        });
-    }
-    handleChangeOffice(event, index, value) {
-        this.setState({
-            office: value
-        });
+
+    handleChangeDateValue(event, date, type) {
+        var nextState = {};
+        nextState[type] = date;
+        this.setState(nextState);
     }
 
     getStepContent(stepIndex) {
@@ -192,77 +168,84 @@ class EmployeeDialog extends Component {
             case 0:
                 return (
                     <div>
-                        <div className="panel-tab-employee-left" >
+                        <div className="content" >
                             <TextField
                                 value={this.state.firstName}
                                 floatingLabelText="First Name"
-                                onChange={this.handleChangeFirstName.bind(this)}
+                                errorText={this.state.firstName==""?this.state.errorTextRequired:""}
+                                onChange={event => this.handleChangeValue(event, 'firstName')}
                             /><br />
                             <TextField
                                 value={this.state.lastName}
                                 floatingLabelText="Last Name"
-                                onChange={this.handleChangeLastName.bind(this)}
+                                errorText={this.state.lastName==""?this.state.errorTextRequired:""}
+                                onChange={event => this.handleChangeValue(event, 'lastName')}
                             /><br />
                             <SelectField
                                 value={this.state.gender}
                                 floatingLabelText="Gender"
-                                onChange={this.handleChangeGender.bind(this)} >
+                                errorText={this.state.gender==""?this.state.errorTextRequired:""}
+                                onChange={(event, index, value) =>  this.handleChangeSelectValue(event, index, value, 'gender')} >
                                 <MenuItem value={"M"} primaryText="Male" />
                                 <MenuItem value={"F"} primaryText="Female" />
                             </SelectField><br />
                             <DatePicker
                                 value={this.state.dob}
                                 floatingLabelText="Date of Birth"
-                                onChange={this.handleChangeDOB.bind(this)}
+                                errorText={this.state.dob==""?this.state.errorTextRequired:""}
+                                onChange={(event, date) =>  this.handleChangeDateValue(event, date, 'dob')}
                                 autoOk={true}
-                            /><br />
+                            />
                             <TextField
                                 value={this.state.nationality}
                                 floatingLabelText="Nationality"
-                                onChange={this.handleChangeNationality.bind(this)}
+                                onChange={event => this.handleChangeValue(event, 'nationality')}
                             /><br />
                             <SelectField
                                 value={this.state.maritalStatus}
                                 floatingLabelText="Marital Status"
-                                onChange={this.handleChangeMaritalStatus.bind(this)} >
+                                onChange={(event, index, value) =>  this.handleChangeSelectValue(event, index, value, 'maritalStatus')} >
                                 <MenuItem value={"S"} primaryText="Single" />
                                 <MenuItem value={"M"} primaryText="Married" />
                             </SelectField><br />
                             <TextField
                                 value={this.state.phone}
                                 floatingLabelText="Phone"
-                                onChange={this.handleChangePhone.bind(this)}
+                                errorText={this.state.phone==""?this.state.errorTextRequired:""}
+                                onChange={event => this.handleChangeValue(event, 'phone')}
                             /><br />
                         </div>
-                        <div className="panel-tab-employee-right" >
+                        <div className="content" >
                             <TextField
                                 value={this.state.subDivision}
                                 floatingLabelText="Sub Division"
-                                onChange={this.handleChangeSubDivision.bind(this)}
+                                errorText={this.state.subDivision==""?this.state.errorTextRequired:""}
+                                onChange={event => this.handleChangeValue(event, 'subDivision')}
                             /><br />
                             <SelectField
                                 value={this.state.status}
                                 floatingLabelText="Status"
-                                onChange={this.handleChangeStatus.bind(this)} >
+                                onChange={(event, index, value) =>  this.handleChangeSelectValue(event, index, value, 'status')} >
                                 <MenuItem value={"C"} primaryText="Contract" />
                                 <MenuItem value={"P"} primaryText="Permanent" />
                             </SelectField><br />
                             <DatePicker
                                 value={this.state.suspendDate}
                                 floatingLabelText="Suspend Date"
-                                onChange={this.handleChangeSuspendDate.bind(this)}
+                                onChange={(event, date) =>  this.handleChangeDateValue(event, date, 'suspendDate')}
                                 autoOk={true}
-                                /><br />
+                                />
                             <DatePicker
                                 value={this.state.hireDate}
                                 floatingLabelText="Hire Date"
-                                onChange={this.handleChangeHireDate.bind(this)}
+                                onChange={(event, date) =>  this.handleChangeDateValue(event, date, 'hireDate')}
                                 autoOk={true}
-                                /><br />
+                                />
                             <SelectField
                                 value={this.state.grade}
                                 floatingLabelText="Grade"
-                                onChange={this.handleChangeGrade.bind(this)} >
+                                errorText={this.state.grade==""?this.state.errorTextRequired:""}
+                                onChange={(event, index, value) =>  this.handleChangeSelectValue(event, index, value, 'grade')} >
                                 <MenuItem value={"SEJP"} primaryText="SE - JP" />
                                 <MenuItem value={"SEPG"} primaryText="SE - PG" />
                                 <MenuItem value={"SEAP"} primaryText="SE - AP" />
@@ -271,7 +254,8 @@ class EmployeeDialog extends Component {
                             <SelectField
                                 value={this.state.division}
                                 floatingLabelText="Division"
-                                onChange={this.handleChangeDivision.bind(this)} >
+                                errorText={this.state.division==""?this.state.errorTextRequired:""}
+                                onChange={(event, index, value) =>  this.handleChangeSelectValue(event, index, value, 'division')} >
                                 <MenuItem value={"SWDR"} primaryText="SWD Red" />
                                 <MenuItem value={"SWDG"} primaryText="SWD Green" />
                                 <MenuItem value={"SWDB"} primaryText="SWD Blue" />
@@ -281,8 +265,15 @@ class EmployeeDialog extends Component {
                             <TextField
                                 value={this.state.email}
                                 floatingLabelText="Email"
-                                onChange={this.handleChangeEmail.bind(this)}
+                                errorText={this.state.email==""?this.state.errorTextRequired:""}
+                                onChange={event => this.handleChangeValue(event, 'email')}
                             /><br />
+                        </div>
+                        <div className="content">
+                            <Avatar
+                              src={require("../images/kholishul_a.jpg")}
+                              size={100}
+                            />
                         </div>
                      </div>);
             case 1:
@@ -298,8 +289,9 @@ class EmployeeDialog extends Component {
                     <div>
                         <SelectField
                             value={this.state.office}
-                            floatingLabelText="Location"
-                            onChange={this.handleChangeOffice.bind(this)} >
+                            floatingLabelText="Office"
+                            errorText={this.state.office==""?this.state.errorTextRequired:""}
+                            onChange={(event, index, value) =>  this.handleChangeSelectValue(event, index, value, 'office')} >
                             <MenuItem value={"JKT"} primaryText="Jakarta" />
                             <MenuItem value={"JOG"} primaryText="Yogyakarta" />
                             <MenuItem value={"SBY"} primaryText="Surabaya" />
@@ -312,7 +304,7 @@ class EmployeeDialog extends Component {
     render() {
         const {finished, stepIndex} = this.state;
         const title = [
-            <Stepper key="Stepper" linear={false} activeStep={stepIndex}>
+            <Stepper key="Stepper" linear={true} activeStep={stepIndex}>
                 <Step>
                     <StepButton icon={<ActionAccountBox color={indigo400}/>} onClick={() => this.setState({stepIndex: 0})} />
                 </Step>
@@ -333,33 +325,35 @@ class EmployeeDialog extends Component {
                 </Step>
             </Stepper>
         ];
-        const actions = [
-            <FlatButton
+        const actionsBtn = [
+            <RaisedButton
                 label="Back"
                 disabled={stepIndex === 0}
                 onTouchTap={this.handlePrev.bind(this)}
             />,
             <RaisedButton
                 label={stepIndex === 5 ? 'Create Employee' : 'Next'}
-                primary={true}
-                onTouchTap={stepIndex === 5 ? this.handleFinish.bind(this) : this.handleNext.bind(this)}
+                secondary={true}
+                keyboardFocused={true}
+                onTouchTap={this.handleNext.bind(this)}
             />
            ];
 
         return(
             <div>
                 <div className="panel-list-add">
-                    <FloatingActionButton onTouchTap={this.handleOpenDialog.bind(this)}>
+                    <FloatingActionButton secondary={true} onTouchTap={this.handleOpenDialog.bind(this)}>
                       <ContentAdd />
                     </FloatingActionButton>
                 </div>
                 <Dialog
-                    open={this.state.dialogIsOpen}
+                    open={this.state.createDialogIsOpen}
                     title={title}
-                    actions={actions}
+                    actions={actionsBtn}
+                    contentStyle={{width: "65%", maxWidth: "none", height:"65%", maxHeight:"none"}}
                     autoScrollBodyContent={true}
                     onRequestClose={this.handleCloseDialog.bind(this)}>
-                    <div>
+                    <div className="contentDialog">
                         {this.getStepContent(stepIndex)}
                     </div>
                 </Dialog>

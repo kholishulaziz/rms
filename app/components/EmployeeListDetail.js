@@ -15,6 +15,49 @@ class EmployeeListDetail extends Component {
     }
 
     render() {
+
+        // lookup
+        var grade = ""
+        if (this.props.employee.grade === "SEJP") {
+            grade = "SE - JP";
+        } else if (this.props.employee.grade === "SEPG") {
+            grade = "SE - PG";
+        } else if (this.props.employee.grade === "SEAP") {
+            grade = "SE - AP";
+        } else if (this.props.employee.grade === "SEAN") {
+            grade = "SE - AN";
+        } else {
+            grade = " - ";
+        }
+        // lookup
+        var division = ""
+        if (this.props.employee.division === "SWDR") {
+            division = "SWD Red";
+        } else if (this.props.employee.division === "SWDG") {
+            division = "SWD Green";
+        } else if (this.props.employee.division === "SWDB") {
+            division = "SWD Blue";
+        } else if (this.props.employee.division === "SWDBl") {
+            division = "SWD Black";
+        } else if (this.props.employee.division === "CDC") {
+            division = "CDC"
+        } else {
+            division = " - ";
+        }
+        // lookup
+        var office = ""
+        if (this.props.employee.office === "JKT") {
+            office = "Jakarta";
+        } else if (this.props.employee.office === "JOG") {
+            office = "Yogyakarta";
+        } else if (this.props.employee.office === "SBY") {
+            office = "Surabaya";
+        } else if (this.props.employee.office === "DPS") {
+            office = "Bali"
+        } else {
+            office = " - ";
+        }
+
         return(
             <div>
                 <Paper zDepth={1} >
@@ -27,8 +70,8 @@ class EmployeeListDetail extends Component {
                         <b>{this.props.employee.firstName} {this.props.employee.lastName}</b><br/>
                     </span>
                     <span>
-                        <small>{this.props.employee.grade}, {this.props.employee.division}<br/>
-                        {this.props.employee.office}, {this.props.employee.phone}</small>
+                        <small>{grade}, {division}<br/>
+                        {office}, {this.props.employee.phone}</small>
                     </span>
                     </ListItem>
                 </Paper>
