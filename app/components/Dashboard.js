@@ -1,13 +1,16 @@
 import React, {Component} from 'react';
 import update from 'react-addons-update';
 import SearchInput, {createFilter} from 'react-search-input';
+import sortBy from 'array-sort-by';
 import $ from 'jquery';
 
 import AppBar from 'material-ui/AppBar';
 import Avatar from 'material-ui/Avatar';
 import DatePicker from 'material-ui/DatePicker';
 import Dialog from 'material-ui/Dialog';
+import FloatingActionButton from 'material-ui/FloatingActionButton';
 import IconButton from 'material-ui/IconButton';
+import IconMenu from 'material-ui/IconMenu';
 import {List, ListItem} from 'material-ui/List';
 import MenuItem from 'material-ui/MenuItem';
 import {white} from 'material-ui/styles/colors';
@@ -24,6 +27,7 @@ import ActionSettings from 'material-ui/svg-icons/action/settings';
 import NavigationMenu from 'material-ui/svg-icons/navigation/menu';
 
 import ActionSearch from 'material-ui/svg-icons/action/search';
+import NavigationClose from 'material-ui/svg-icons/navigation/close';
 import AvSortByAlpha from 'material-ui/svg-icons/av/sort-by-alpha';
 import ContentFilterList from 'material-ui/svg-icons/content/filter-list';
 
@@ -33,6 +37,8 @@ import ActionHome from 'material-ui/svg-icons/action/home';
 import CommunicationLocationOn from 'material-ui/svg-icons/communication/location-on';
 import MapsLayers from 'material-ui/svg-icons/maps/layers';
 import NotificationWc from 'material-ui/svg-icons/notification/wc';
+
+import ContentAdd from 'material-ui/svg-icons/content/add';
 
 import Constants from '../Constants';
 import EmployeeListDetail from './EmployeeListDetail'
@@ -52,7 +58,7 @@ const employeesData = [
         status: 'P',
         suspendDate: new Object,
         hireDate: new Date(2013,10,18),
-        grade: 'SEPG',
+        grade: 'SE2',
         division: 'CDC',
         email: 'kholishul.aziz@mitrais.com',
         office: 'SBY'
@@ -70,7 +76,7 @@ const employeesData = [
         status: 'C',
         suspendDate: new Object,
         hireDate: new Date(2013,10,18),
-        grade: 'SEJP',
+        grade: 'SE1',
         division: 'SWDBl',
         email: 'aldebaran.aziz@mitrais.com',
         office: 'JOG'
@@ -88,7 +94,7 @@ const employeesData = [
         status: 'P',
         suspendDate: new Object,
         hireDate: new Date(2013,10,18),
-        grade: 'SEAN',
+        grade: 'SE4',
         division: 'SWDR',
         email: 'ricard.gideon@mitrais.com',
         office: 'JKT'
@@ -106,7 +112,7 @@ const employeesData = [
         status: 'P',
         suspendDate: new Object,
         hireDate: new Date(2013,10,18),
-        grade: 'SEAN',
+        grade: 'SE4',
         division: 'SWDG',
         email: 'mary.watson@mitrais.com',
         office: 'JKT'
@@ -124,12 +130,43 @@ const employeesData = [
         status: 'C',
         suspendDate: new Object,
         hireDate: new Date(2013,10,18),
-        grade: 'SEJP',
+        grade: 'SE1',
         division: 'SWDB',
         email: 'emma.watson@mitrais.com',
         office: 'DPS'
     },
+    {
+        id: 'dr_w',
+        firstName: 'Dr',
+        lastName: 'Watson',
+        gender: 'M',
+        dob: new Date(2017,0,21),
+        nationality: 'Australia',
+        maritalStatus: 'M',
+        phone: '+62857 1234 5678',
+        subDivision: 'Net Bootcamp',
+        status: 'C',
+        suspendDate: new Object,
+        hireDate: new Date(2013,10,18),
+        grade: 'SE3',
+        division: 'SWDR',
+        email: 'dr.watson@mitrais.com',
+        office: 'JOG'
+    },
+
 ];
+
+const sorting = [
+    {
+       sortingBy: "GRADE",
+       sortingType: "ASC",
+    },
+    {
+       sortingBy: "NAME",
+       sortingType: "ASC",
+    }
+];
+
 
 const KEYS_TO_FILTERS = ['firstName','lastName'];
 
@@ -140,12 +177,15 @@ class Dashboard extends Component {
         this.state = {
             employees: employeesData,
             employee: employeesData[0],
-            searchEmployee: {},
+            viewMode: true,
             errorTextRequired: "This field is required!",
-            editMode: true,
             searchMode: false,
+            searchQuery: '',
+            searchEmployee: {},
             deleteDialogIsOpen: false,
             validationDialogIsOpen: false,
+            sortingDialogIsOpen: false,
+            sorting: sorting,
         }
         console.log("-- Init State --");
         console.log(this.state);
@@ -177,7 +217,7 @@ class Dashboard extends Component {
 
     handleEditMode() {
         this.setState({
-            editMode: false
+            viewMode: false
         })
     }
 
@@ -197,7 +237,7 @@ class Dashboard extends Component {
             employees[index] = this.state.employee;
             this.setState({
                 employees: employees,
-                editMode: true
+                viewMode: true
             })
         }
     }
@@ -207,7 +247,7 @@ class Dashboard extends Component {
         var employees = this.state.employees;
         this.setState({
             employee: employees[index],
-            editMode: true
+            viewMode: true
         })
     }
 
@@ -222,6 +262,49 @@ class Dashboard extends Component {
             })
         }
         this.handleCloseDeleteDialog();
+    }
+
+    handleSearchEmployee(event){
+        var employees = this.state.employees;
+        if (event.target.value.length >= 3){
+            var searchEmployee = employees.filter(createFilter(event.target.value, KEYS_TO_FILTERS));
+            this.setState({
+                searchEmployee: searchEmployee,
+                searchMode: true,
+            });
+        } else {
+            this.handleUnsearchEmployee(event);
+        }
+    }
+
+    handleUnsearchEmployee(event){
+        if (event.target.value.length < 3){
+            this.setState({
+                searchMode: false,
+            });
+        }
+    }
+
+    handleResetSearch(){
+        this.setState({
+            searchMode: false,
+            searchQuery: ''
+        });
+    }
+
+    handleSortingOption(){
+        console.log("-- Sorting --");
+        //working
+        var employees = this.state.employees;
+
+        //sortBy(employees, (o) => [o.firstName]);
+        sortBy(employees, (o) => [o.grade, o.firstName, o.lastName]);
+
+        this.setState({
+            employee: employees[0],
+        })
+        //console.log(employees);
+        this.handleCloseSortingDialog();
     }
 
     handleOpenDeleteDialog() {
@@ -248,27 +331,17 @@ class Dashboard extends Component {
         });
     }
 
-    handleSearchEmployee(event){
-        var employees = this.state.employees;
-        if (event.target.value.length >= 3){
-            var searchEmployee = employees.filter(createFilter(event.target.value, KEYS_TO_FILTERS));
-            this.setState({
-                searchEmployee: searchEmployee,
-                searchMode: true,
-            });
-        } else {
-            this.handleUnsearchEmployee(event);
-        }
+    handleOpenSortingDialog() {
+        this.setState({
+            sortingDialogIsOpen: true,
+        });
     }
 
-    handleUnsearchEmployee(event){
-        if (event.target.value.length < 3){
-            this.setState({
-                searchMode: false,
-            });
-        }
+    handleCloseSortingDialog() {
+        this.setState({
+            sortingDialogIsOpen: false,
+        });
     }
-
 
     handleChangeValue(event, type) {
         var nextState = update(this.state, {
@@ -291,7 +364,43 @@ class Dashboard extends Component {
         this.setState(nextState);
     }
 
+    handleChangeSearchQueryValue(event, type) {
+        var nextState = {};
+        nextState[type] = event.target.value;
+        this.setState(nextState);
+
+        this.handleSearchEmployee(event);
+    }
+
+    handleChangeSelectSortingValue(event, index, value, type, keyIndex) {
+        var parent = this._reactInternalInstance._currentElement._owner._instance;
+        //working
+        console.log(parent.state)
+        console.log(value)
+        console.log(type)
+        console.log(index)
+        console.log(keyIndex)
+        var nextState = update(parent.state, {
+             sorting: {[type]: {$set: value}}
+        });
+        parent.setState(nextState);
+    }
+
     render() {
+        // lookup
+        var grade = ""
+        if (this.state.employee.grade === "SE1") {
+            grade = "SE - JP";
+        } else if (this.state.employee.grade === "SE2") {
+            grade = "SE - PG";
+        } else if (this.state.employee.grade === "SE3") {
+            grade = "SE - AP";
+        } else if (this.state.employee.grade === "SE4") {
+            grade = "SE - AN";
+        } else {
+            grade = " - ";
+        }
+
         var employeeListDetail = {};
         if (this.state.searchMode){
             employeeListDetail = this.state.searchEmployee.map( employee =>
@@ -302,6 +411,10 @@ class Dashboard extends Component {
             <EmployeeListDetail key={employee.id} employee={employee} handleTouchTap={this.handleTouchTap}/>
             );
         }
+
+        var employeeCustomSorting = this.state.sorting.map ( (sorting,index) =>
+            <EmployeeCustomSorting key={index} index={index} handleChangeSelectSortingValue={this.handleChangeSelectSortingValue} sorting={sorting} />
+        )
 
         const actionsDeleteBtn = [
             <RaisedButton
@@ -325,6 +438,19 @@ class Dashboard extends Component {
             />,
         ];
 
+        const actionsSortingBtn = [
+            <RaisedButton
+                label="Cancel"
+                onTouchTap={this.handleCloseSortingDialog.bind(this)}
+            />,
+            <RaisedButton
+                label="Ok"
+                secondary={true}
+                keyboardFocused={true}
+                onTouchTap={this.handleSortingOption.bind(this)}
+            />
+        ];
+
         return (
             <div>
                 <MuiThemeProvider muiTheme={getMuiTheme(Constants.themeIndigo500)}>
@@ -337,7 +463,7 @@ class Dashboard extends Component {
                         <div className="app-bar-user-info">
                             <span>
                                 {this.state.employee.firstName} {this.state.employee.lastName}<br />
-                                {this.state.employee.grade}
+                                <small>{grade}</small>
                             </span>
                         </div>
                         <IconButton tooltip="Setting" iconStyle={Constants.mediumIcon}>
@@ -349,28 +475,30 @@ class Dashboard extends Component {
                     </AppBar>
                 </MuiThemeProvider>
                 <MuiThemeProvider muiTheme={getMuiTheme(Constants.themeIndigo400)}>
-                    <div>
+                    <div className="panel-container">
                         <div className="panel-list">
                             <div className="panel-list-header">
-                                <IconButton tooltip="Search">
-                                    <ActionSearch color={white} />
+                                <IconButton onTouchTap={this.handleResetSearch.bind(this)}>
+                                    {   this.state.searchMode ? <NavigationClose color={white} /> :
+                                        <ActionSearch color={white} /> }
                                 </IconButton>
                                 <TextField
-                                    id="search"
+                                    value={this.state.searchQuery}
                                     hintText="Search"
-                                    onChange={this.handleSearchEmployee.bind(this)}
+                                    onChange={event => this.handleChangeSearchQueryValue(event, 'searchQuery')}
                                     onBlur={this.handleUnsearchEmployee.bind(this)}
                                     underlineStyle={{display: 'none'}}
-                                    style ={{width: '55%'}}
+                                    style ={{width: '40%'}}
                                     inputStyle={Constants.colorWhite}
                                     hintStyle={Constants.colorWhite}/>
-                                <IconButton tooltip="Order">
-                                    <AvSortByAlpha color={white} />
-                                </IconButton>
-                                <IconButton tooltip="Filter">
+                                <span className="panel-list-btn panel-list-length">{employeeListDetail.length}</span>
+                                <IconButton tooltip="Filter" className="panel-list-btn">
                                     <ContentFilterList color={white} />
                                 </IconButton>
-                                <span className="panel-list-length">{this.state.employees.length}</span>
+                                <IconButton tooltip="Order" className="panel-list-btn"
+                                    onTouchTap={this.handleOpenSortingDialog.bind(this)}>
+                                    <AvSortByAlpha color={white} />
+                                </IconButton>
                             </div>
                             <div className="panel-list-container">
                                 {employeeListDetail.length > 0 ? (
@@ -378,7 +506,9 @@ class Dashboard extends Component {
                                         {employeeListDetail}
                                     </List>
                                 ) : (
-                                    <span>No Record Found</span>
+                                    <div className="no-record">
+                                        <span>No Record Found</span>
+                                    </div>
                                 )}
                                 <div>
                                     <EmployeeDialog employee={this.state.employee} handleAddEmployee={this.handleAddEmployee}/>
@@ -388,8 +518,8 @@ class Dashboard extends Component {
                         <div className="panel-tab">
                             <Tabs>
                                 <Tab icon={<ActionAccountBox />} >
-                                  <div className="content">
-                                    <h2>Employee</h2>
+                                  <div className="content-container">
+                                    <h2 className="content-header">Employee</h2>
                                     <div className="content" >
                                         <input type="hidden" id="employeeId" value={this.state.employee.id}/>
                                         <TextField
@@ -397,21 +527,21 @@ class Dashboard extends Component {
                                             floatingLabelText="First Name"
                                             errorText={this.state.employee.firstName==""?this.state.errorTextRequired:""}
                                             onChange={event => this.handleChangeValue(event, 'firstName')}
-                                            disabled={this.state.editMode}
+                                            disabled={this.state.viewMode}
                                         /><br />
                                         <TextField
                                             value={this.state.employee.lastName}
                                             floatingLabelText="Last Name"
                                             errorText={this.state.employee.lastName==""?this.state.errorTextRequired:""}
                                             onChange={event => this.handleChangeValue(event, 'lastName')}
-                                            disabled={this.state.editMode}
+                                            disabled={this.state.viewMode}
                                         /><br />
                                         <SelectField
                                             value={this.state.employee.gender}
                                             floatingLabelText="Gender"
                                             errorText={this.state.employee.gender==""?this.state.errorTextRequired:""}
                                             onChange={(event, index, value) =>  this.handleChangeSelectValue(event, index, value, 'gender')}
-                                            disabled={this.state.editMode} >
+                                            disabled={this.state.viewMode} >
                                             <MenuItem value={"M"} primaryText="Male" />
                                             <MenuItem value={"F"} primaryText="Female" />
                                         </SelectField><br />
@@ -421,19 +551,19 @@ class Dashboard extends Component {
                                             errorText={this.state.employee.dob==""?this.state.errorTextRequired:""}
                                             onChange={(event, date) =>  this.handleChangeDateValue(event, date, 'dob')}
                                             autoOk={true}
-                                            disabled={this.state.editMode}
+                                            disabled={this.state.viewMode}
                                         />
                                         <TextField
                                             value={this.state.employee.nationality}
                                             floatingLabelText="Nationality"
                                             onChange={event => this.handleChangeValue(event, 'nationality')}
-                                            disabled={this.state.editMode}
+                                            disabled={this.state.viewMode}
                                         /><br />
                                         <SelectField
                                             value={this.state.employee.maritalStatus}
                                             floatingLabelText="Marital Status"
                                             onChange={(event, index, value) =>  this.handleChangeSelectValue(event, index, value, 'maritalStatus')}
-                                            disabled={this.state.editMode}>
+                                            disabled={this.state.viewMode}>
                                             <MenuItem value={"S"} primaryText="Single" />
                                             <MenuItem value={"M"} primaryText="Married" />
                                         </SelectField><br />
@@ -442,7 +572,7 @@ class Dashboard extends Component {
                                             floatingLabelText="Phone"
                                             errorText={this.state.employee.phone==""?this.state.errorTextRequired:""}
                                             onChange={event => this.handleChangeValue(event, 'phone')}
-                                            disabled={this.state.editMode}
+                                            disabled={this.state.viewMode}
                                         /><br />
                                     </div>
                                     <div className="content">
@@ -451,13 +581,13 @@ class Dashboard extends Component {
                                         	floatingLabelText="Sub Division"
                                         	errorText={this.state.employee.subDivision==""?this.state.errorTextRequired:""}
                                         	onChange={event => this.handleChangeValue(event, 'subDivision')}
-                                        	disabled={this.state.editMode}
+                                        	disabled={this.state.viewMode}
                                         /><br />
                                         <SelectField
                                         	value={this.state.employee.status}
                                         	floatingLabelText="Status"
                                         	onChange={(event, index, value) =>  this.handleChangeSelectValue(event, index, value, 'status')}
-                                        	disabled={this.state.editMode} >
+                                        	disabled={this.state.viewMode} >
                                         	<MenuItem value={"C"} primaryText="Contract" />
                                         	<MenuItem value={"P"} primaryText="Permanent" />
                                         </SelectField><br />
@@ -466,32 +596,32 @@ class Dashboard extends Component {
                                         	floatingLabelText="Suspend Date"
                                         	onChange={(event, date) =>  this.handleChangeDateValue(event, date, 'suspendDate')}
                                         	autoOk={true}
-                                        	disabled={this.state.editMode}
+                                        	disabled={this.state.viewMode}
                                         />
                                         <DatePicker
                                         	value={this.state.employee.hireDate}
                                         	floatingLabelText="Hire Date"
                                         	onChange={(event, date) =>  this.handleChangeDateValue(event, date, 'hireDate')}
                                         	autoOk={true}
-                                        	disabled={this.state.editMode}
+                                        	disabled={this.state.viewMode}
                                         />
                                         <SelectField
                                         	value={this.state.employee.grade}
                                         	floatingLabelText="Grade"
                                         	errorText={this.state.employee.grade==""?this.state.errorTextRequired:""}
                                         	onChange={(event, index, value) =>  this.handleChangeSelectValue(event, index, value, 'grade')}
-                                        	disabled={this.state.editMode} >
-                                        	<MenuItem value={"SEJP"} primaryText="SE - JP" />
-                                        	<MenuItem value={"SEPG"} primaryText="SE - PG" />
-                                        	<MenuItem value={"SEAP"} primaryText="SE - AP" />
-                                        	<MenuItem value={"SEAN"} primaryText="SE - AN" />
+                                        	disabled={this.state.viewMode} >
+                                        	<MenuItem value={"SE1"} primaryText="SE - JP" />
+                                        	<MenuItem value={"SE2"} primaryText="SE - PG" />
+                                        	<MenuItem value={"SE3"} primaryText="SE - AP" />
+                                        	<MenuItem value={"SE4"} primaryText="SE - AN" />
                                         </SelectField><br />
                                         <SelectField
                                         	value={this.state.employee.division}
                                         	floatingLabelText="Division"
                                         	errorText={this.state.employee.division==""?this.state.errorTextRequired:""}
                                         	onChange={(event, index, value) =>  this.handleChangeSelectValue(event, index, value, 'division')}
-                                        	disabled={this.state.editMode} >
+                                        	disabled={this.state.viewMode} >
                                         	<MenuItem value={"SWDR"} primaryText="SWD Red" />
                                         	<MenuItem value={"SWDG"} primaryText="SWD Green" />
                                         	<MenuItem value={"SWDB"} primaryText="SWD Blue" />
@@ -503,7 +633,7 @@ class Dashboard extends Component {
                                         	floatingLabelText="Email"
                                         	errorText={this.state.employee.email==""?this.state.errorTextRequired:""}
                                         	onChange={event => this.handleChangeValue(event, 'email')}
-                                        	disabled={this.state.editMode}
+                                        	disabled={this.state.viewMode}
                                         /><br />
                                     </div>
                                     <div className="content">
@@ -515,35 +645,35 @@ class Dashboard extends Component {
                                   </div>
                                 </Tab>
                                 <Tab icon={<ActionHistory />} >
-                                  <div className="content">
-                                    <h2>History</h2>
+                                  <div className="content-container">
+                                    <h2 className="content-header">History</h2>
                                   </div>
                                 </Tab>
                                 <Tab icon={<MapsLayers />} >
-                                  <div className="content">
-                                    <h2>Grade</h2>
+                                  <div className="content-container">
+                                    <h2 className="content-header">Grade</h2>
                                   </div>
                                 </Tab>
                                 <Tab icon={<NotificationWc />} >
-                                  <div className="content">
-                                    <h2>Family Member</h2>
+                                  <div className="content-container">
+                                    <h2 className="content-header">Family Member</h2>
                                   </div>
                                 </Tab>
                                 <Tab icon={<ActionHome />} >
-                                  <div className="content">
-                                    <h2>Address</h2>
+                                  <div className="content-container">
+                                    <h2 className="content-header">Address</h2>
                                   </div>
                                 </Tab>
                                 <Tab icon={<CommunicationLocationOn />} >
-                                  <div className="content">
-                                      <h2>Employee</h2>
+                                  <div className="content-container">
+                                      <h2 className="content-header">Location</h2>
                                       <div className="content" >
                                             <SelectField
                                                 value={this.state.employee.office}
                                                 floatingLabelText="Office"
                                                 errorText={this.state.employee.office==""?this.state.errorTextRequired:""}
                                                 onChange={(event, index, value) =>  this.handleChangeSelectValue(event, index, value, 'office')}
-                                                disabled={this.state.editMode} >
+                                                disabled={this.state.viewMode} >
                                                 <MenuItem value={"JKT"} primaryText="Jakarta" />
                                                 <MenuItem value={"JOG"} primaryText="Yogyakarta" />
                                                 <MenuItem value={"SBY"} primaryText="Surabaya" />
@@ -555,35 +685,40 @@ class Dashboard extends Component {
                               </Tabs>
                         </div>
                         <div className="foot">
-                        { (this.state.editMode) ? (
-                            <div className="foot-btn">
-                                <RaisedButton
-                                    label={"Delete"}
-                                    secondary={true}
-                                    onTouchTap={this.handleOpenDeleteDialog.bind(this)}
-                                />
-                                <RaisedButton
-                                    label={"Edit"}
-                                    secondary={true}
-                                    onTouchTap={this.handleEditMode.bind(this)}
-                                />
-                            </div> ):(
-                            <div className="foot-btn">
-                                <RaisedButton
-                                    label={"Cancel"}
-                                    onTouchTap={this.handleCancel.bind(this)}
-                                />
-                                <RaisedButton
-                                    label={"Save"}
-                                    secondary={true}
-                                    onTouchTap={this.handleUpdateEmployee.bind(this)}
-                                />
-                            </div> )}
+                            { (this.state.viewMode) ? (
+                                <div>
+                                    <RaisedButton
+                                        label={"Edit"}
+                                        secondary={true}
+                                        onTouchTap={this.handleEditMode.bind(this)}
+                                        className="foot-btn"
+                                    />
+                                    <RaisedButton
+                                        label={"Delete"}
+                                        secondary={true}
+                                        onTouchTap={this.handleOpenDeleteDialog.bind(this)}
+                                        className="foot-btn"
+                                    />
+
+                                </div> ):(
+                                <div>
+                                    <RaisedButton
+                                        label={"Save"}
+                                        secondary={true}
+                                        onTouchTap={this.handleUpdateEmployee.bind(this)}
+                                        className="foot-btn"
+                                    />
+                                    <RaisedButton
+                                        label={"Cancel"}
+                                        onTouchTap={this.handleCancel.bind(this)}
+                                        className="foot-btn"
+                                    />
+                                </div> )}
                         </div>
                         <div>
                             <Dialog
-                                open={this.state.deleteDialogIsOpen}
                                 title="Delete Employee"
+                                open={this.state.deleteDialogIsOpen}
                                 actions={actionsDeleteBtn}
                                 onRequestClose={this.handleCloseDeleteDialog.bind(this)}
                                 >
@@ -600,9 +735,65 @@ class Dashboard extends Component {
                                     <span>Make sure all required fields all filled!</span>
                                 </div>
                             </Dialog>
+                            <Dialog
+                                title="Sorting Option"
+                                open={this.state.sortingDialogIsOpen}
+                                actions={actionsSortingBtn}
+                                onRequestClose={this.handleCloseSortingDialog.bind(this)}
+                                >
+                                <div>
+                                    <div>
+                                        <div className="content">
+                                            <span>Sort By</span>
+                                        </div>
+                                        <div className="content">
+                                            <span>Sort type</span>
+                                        </div>
+                                    </div>
+                                    {employeeCustomSorting}
+                                    <div className="panel-list-add">
+                                        <FloatingActionButton secondary={true} mini={true}>
+                                          <ContentAdd />
+                                        </FloatingActionButton>
+                                    </div>
+                                </div>
+                            </Dialog>
                         </div>
                     </div>
                 </MuiThemeProvider>
+            </div>
+        );
+    }
+}
+
+class EmployeeCustomSorting extends Component {
+
+    constructor(props, context) {
+        super(props, context);
+        this.handleChangeSelectSortingValue = this.props.handleChangeSelectSortingValue.bind(this);
+    }
+
+    render() {
+        return(
+            <div>
+                <SelectField className="content"
+                    value = {this.props.sorting.sortingBy}
+                    hintText="Sort By"
+                    onChange={(event, index, value) =>  this.handleChangeSelectSortingValue(event, index, value, 'sortingBy', this.props.index)}
+                    >
+                    <MenuItem value={"NAME"} primaryText="Name" />
+                    <MenuItem value={"LOC"} primaryText="Location" />
+                    <MenuItem value={"GRADE"} primaryText="Grade" />
+                    <MenuItem value={"JOIN"} primaryText="Join Date" />
+                </SelectField><br />
+                <SelectField className="content"
+                    value = {this.props.sorting.sortingType}
+                    hintText="Sort Type"
+                    onChange={(event, index, value) =>  this.handleChangeSelectSortingValue(event, index, value, 'sortingType', this.props.index)}
+                    >
+                    <MenuItem value={"ASC"} primaryText="Ascending" />
+                    <MenuItem value={"DESC"} primaryText="Descending" />
+                </SelectField><br />
             </div>
         );
     }

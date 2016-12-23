@@ -1,4 +1,4 @@
-import {indigo500, indigo400, white, red} from 'material-ui/styles/colors';
+import {indigo500, indigo400, white} from 'material-ui/styles/colors';
 
 export default {
     themeIndigo500:{
@@ -9,7 +9,10 @@ export default {
     themeIndigo400:{
         palette: {
             primary1Color: indigo400
-        }
+        },
+        datePicker: {
+            selectColor: indigo400,
+        },
     },
     mediumIcon: {
         width: 36,

@@ -18,13 +18,13 @@ class EmployeeListDetail extends Component {
 
         // lookup
         var grade = ""
-        if (this.props.employee.grade === "SEJP") {
+        if (this.props.employee.grade === "SE1") {
             grade = "SE - JP";
-        } else if (this.props.employee.grade === "SEPG") {
+        } else if (this.props.employee.grade === "SE2") {
             grade = "SE - PG";
-        } else if (this.props.employee.grade === "SEAP") {
+        } else if (this.props.employee.grade === "SE3") {
             grade = "SE - AP";
-        } else if (this.props.employee.grade === "SEAN") {
+        } else if (this.props.employee.grade === "SE4") {
             grade = "SE - AN";
         } else {
             grade = " - ";

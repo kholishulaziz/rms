@@ -246,10 +246,10 @@ class EmployeeDialog extends Component {
                                 floatingLabelText="Grade"
                                 errorText={this.state.grade==""?this.state.errorTextRequired:""}
                                 onChange={(event, index, value) =>  this.handleChangeSelectValue(event, index, value, 'grade')} >
-                                <MenuItem value={"SEJP"} primaryText="SE - JP" />
-                                <MenuItem value={"SEPG"} primaryText="SE - PG" />
-                                <MenuItem value={"SEAP"} primaryText="SE - AP" />
-                                <MenuItem value={"SEAN"} primaryText="SE - AN" />
+                                <MenuItem value={"SE1"} primaryText="SE - JP" />
+                                <MenuItem value={"SE2"} primaryText="SE - PG" />
+                                <MenuItem value={"SE3"} primaryText="SE - AP" />
+                                <MenuItem value={"SE4"} primaryText="SE - AN" />
                             </SelectField><br />
                             <SelectField
                                 value={this.state.division}
@@ -353,7 +353,7 @@ class EmployeeDialog extends Component {
                     contentStyle={{width: "65%", maxWidth: "none", height:"65%", maxHeight:"none"}}
                     autoScrollBodyContent={true}
                     onRequestClose={this.handleCloseDialog.bind(this)}>
-                    <div className="contentDialog">
+                    <div className="content-dialog">
                         {this.getStepContent(stepIndex)}
                     </div>
                 </Dialog>
