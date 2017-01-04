@@ -13,8 +13,9 @@ import ContentFilterList from 'material-ui/svg-icons/content/filter-list';
 
 import EmployeeListDetail from './EmployeeListDetail'
 import SortingDialog from './SortingDialog'
+import FilterDialog from './FilterDialog'
 
-const KEYS_TO_FILTERS = ['firstName','lastName'];
+const KEYS_TO_FILTERS = ['firstName','lastName','grade','office'];
 
 class EmployeeList extends Component {
 
@@ -25,6 +26,7 @@ class EmployeeList extends Component {
             searchQuery: '',
             searchEmployee: {},
             sortingDialogIsOpen: false,
+            filterDialogIsOpen: false,
         }
     }
 
@@ -75,6 +77,18 @@ class EmployeeList extends Component {
         });
     }
 
+    handleOpenFilterDialog() {
+        this.setState({
+            filterDialogIsOpen: true,
+        });
+    }
+
+    handleCloseFilterDialog() {
+        this.setState({
+            filterDialogIsOpen: false,
+        });
+    }
+
     render() {
         var employeeListDetail = {};
         if (this.state.searchMode){
@@ -112,7 +126,8 @@ class EmployeeList extends Component {
                         inputStyle={{color: white}}
                         hintStyle={{color: white}}/>
                     <span className="panel-list-btn panel-list-length">{employeeListDetail.length}</span>
-                    <IconButton tooltip="Filter" className="panel-list-btn">
+                    <IconButton tooltip="Filter" className="panel-list-btn"
+                        onTouchTap={this.handleOpenFilterDialog.bind(this)}>
                         <ContentFilterList color={white} />
                     </IconButton>
                     <IconButton tooltip="Order" className="panel-list-btn"
@@ -136,6 +151,13 @@ class EmployeeList extends Component {
                     employees = {this.props.employees}
                     sortingDialogIsOpen = {this.state.sortingDialogIsOpen}
                     handleCloseSortingDialog = {this.handleCloseSortingDialog.bind(this)}
+                    setCurrentEmployee = {this.props.setCurrentEmployee.bind(this)}
+                    handleResetSearch = {this.handleResetSearch.bind(this)}
+                />
+                <FilterDialog
+                    employees = {this.props.employees}
+                    filterDialogIsOpen = {this.state.filterDialogIsOpen}
+                    handleCloseFilterDialog = {this.handleCloseFilterDialog.bind(this)}
                     setCurrentEmployee = {this.props.setCurrentEmployee.bind(this)}
                     handleResetSearch = {this.handleResetSearch.bind(this)}
                 />

@@ -58,6 +58,8 @@ class EmployeeListDetail extends Component {
             office = "Surabaya";
         } else if (this.props.employee.office === "DPS") {
             office = "Bali"
+        } else if (this.props.employee.office === "BDG") {
+            office = "Bandung"
         } else {
             office = " - ";
         }

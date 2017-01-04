@@ -1,10 +1,13 @@
 import React, {Component} from 'react';
 import update from 'react-addons-update';
 
+import IconButton from 'material-ui/IconButton';
 import FloatingActionButton from 'material-ui/FloatingActionButton';
 import MenuItem from 'material-ui/MenuItem';
 import SelectField from 'material-ui/SelectField';
 import NavigationClose from 'material-ui/svg-icons/navigation/close';
+
+import Constants from '../data/Constants';
 
 class SortingDialogCriteria extends Component {
 
@@ -24,29 +27,35 @@ class SortingDialogCriteria extends Component {
 
     render() {
         return(
-            <div>
-                <FloatingActionButton secondary={true} mini={true}>
+            <div id={"sort-criteria-"+this.props.indexCriteria} className="content-min">
+                <IconButton className="content-x"
+                    iconStyle={Constants.smallIcon}
+                    onTouchTap={this.props.removeSortingCriteria.bind(this, this.props.indexCriteria)}
+                    disabled={this.props.disabledRemove}>
                     <NavigationClose />
-                </FloatingActionButton>
-                <SelectField className="content"
+                </IconButton>
+                <SelectField
                     value = {this.props.sorting.sortingBy}
                     hintText="Sort By"
+                    style={{width: "150px"}}
+                    className="content-min"
                     onChange={(event, index, value) =>  this.handleChangeSelectValue(event, index, value, 'sortingBy', this.props.indexCriteria)}
                     >
-                    <MenuItem value={"firstName"} primaryText="First Name" />
-                    <MenuItem value={"lastName"} primaryText="Last Name" />
-                    <MenuItem value={"location"} primaryText="Location" />
+                    <MenuItem value={"firstName"} primaryText="Name" />
+                    <MenuItem value={"office"} primaryText="Office" />
                     <MenuItem value={"grade"} primaryText="Grade" />
                     <MenuItem value={"hireDate"} primaryText="Join Date" />
-                </SelectField><br />
-                <SelectField className="content"
+                </SelectField>
+                <SelectField
                     value = {this.props.sorting.sortingType}
                     hintText="Sort Type"
+                    style={{width: "150px"}}
+                    className="content-min"
                     onChange={(event, index, value) =>  this.handleChangeSelectValue(event, index, value, 'sortingType', this.props.indexCriteria)}
                     >
-                    <MenuItem value={"ASC"} primaryText="Ascending" />
-                    <MenuItem value={"DESC"} primaryText="Descending" />
-                </SelectField><br />
+                    <MenuItem value={"asc:"} primaryText="Ascending" />
+                    <MenuItem value={"desc:"} primaryText="Descending" />
+                </SelectField>
             </div>
         );
     }

@@ -85,6 +85,26 @@ span {
 .content-dialog {
     min-height: 600px;
 }
+.content-min-container {
+    display:block;
+    min-height: 300px;
+    height: 300px;
+    overflow: auto;
+}
+.content-min {
+    float: left;
+    min-width: 150px;
+    margin: 5px;
+}
+.content-x {
+    float: left;
+    margin: 5px;
+}
+.sort-criteria-add {
+    position: absolute;
+    right: 5%;
+    bottom: 20%;
+}
 
 .foot {
     background: #5c6bc0;

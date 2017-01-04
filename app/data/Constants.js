@@ -17,5 +17,9 @@ export default {
     mediumIcon: {
         width: 36,
         height: 36,
+    },
+    smallIcon: {
+        width: 20,
+        height: 20,
     }
 };

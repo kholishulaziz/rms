@@ -11,13 +11,8 @@ import SortingDialogCriteria from './SortingDialogCriteria'
 const sortingData = [
     {
        sortingBy: "firstName",
-       sortingType: "ASC",
-    },
-    {
-       sortingBy: "grade",
-       sortingType: "ASC",
-    },
-
+       sortingType: "asc:",
+    }
 ];
 
 class SortingDialog extends Component {
@@ -33,8 +28,8 @@ class SortingDialog extends Component {
     addSortingCriteria(){
         var sortingData = this.state.sortings
         sortingData.push({
-            sortingBy: null,
-            sortingType: null
+            sortingBy: "firstName",
+            sortingType: "asc:",
         })
         //console.log("-- Add New Sorting Criteria --");
         this.setState({ sortings: sortingData });
@@ -50,12 +45,25 @@ class SortingDialog extends Component {
         });
     }
 
+    removeSortingCriteria(indexCriteria){
+        var sortingData = this.state.sortings;
+        if (sortingData.length>1){
+            sortingData.splice( indexCriteria, 1 );
+            this.setState({
+                sortings: sortingData,
+            });
+        }
+    }
+
     handleSortingOption(){
         var employees = this.props.employees;
-        this.state.sortings.map( (sorting, index) =>  {
-            //console.log("-- Sorting["+index+"-"+sorting.sortingBy+"] --");
-            sortBy(employees, (e) =>   [e[sorting.sortingBy]]  );
+        var sortingData = this.state.sortings;
+        sortingData.reverse();
+        sortingData.map( (sorting, index) =>  {
+            //console.log("-- Sorting["+index+"-"+sorting.sortingBy+"-"+sorting.sortingType+"] --");
+            sortBy(employees, (e) => [sorting.sortingType] + [e[sorting.sortingBy]]);
         });
+        sortingData.reverse();
         this.props.setCurrentEmployee(employees[0]);
         this.props.handleResetSearch();
         this.handleCloseSortingDialog();
@@ -69,7 +77,9 @@ class SortingDialog extends Component {
         var sortingDialogCriteria = this.state.sortings.map ( (sorting,index) =>
             <SortingDialogCriteria
                 key={index} indexCriteria={index}
+                disabledRemove={this.state.sortings.length<2 ? true:false}
                 updateSortingCriteria={this.updateSortingCriteria.bind(this)}
+                removeSortingCriteria={this.removeSortingCriteria.bind(this)}
                 sorting={sorting} />
         )
 
@@ -88,20 +98,24 @@ class SortingDialog extends Component {
                 open={this.props.sortingDialogIsOpen}
                 actions={actionsSortingBtn}
                 onRequestClose={this.handleCloseSortingDialog.bind(this)}
+                contentStyle={{minWidth: "320px", maxWidth: "450px"}}
                 >
-                <div>
+                <div className="content-min-container">
                     <div>
-                        <div className="content">
+                        <div className="content-min">
                             <span>Sort By</span>
                         </div>
-                        <div className="content">
+                        <div className="content-min">
                             <span>Sort type</span>
                         </div>
                     </div>
                     {sortingDialogCriteria}
-                    <div className="panel-list-add">
-                        <FloatingActionButton onTouchTap={this.addSortingCriteria.bind(this)}
-                            secondary={true} mini={true}>
+                    <div>
+                        <FloatingActionButton
+                            className="sort-criteria-add"
+                            onTouchTap={this.addSortingCriteria.bind(this)}
+                            secondary={true} mini={true}
+                            disabled={this.state.sortings.length>2 ? true:false}>
                             <ContentAdd />
                         </FloatingActionButton>
                     </div>

@@ -43,10 +43,11 @@ class DetailLocation extends Component {
                         errorText={this.props.employee.office==""?this.props.errorTextRequired:""}
                         onChange={(event, index, value) =>  this.handleChangeSelectValue(event, index, value, 'office')}
                         disabled={this.props.viewMode} >
-                        <MenuItem value={"JKT"} primaryText="Jakarta" />
-                        <MenuItem value={"JOG"} primaryText="Yogyakarta" />
-                        <MenuItem value={"SBY"} primaryText="Surabaya" />
                         <MenuItem value={"DPS"} primaryText="Bali" />
+                        <MenuItem value={"JOG"} primaryText="Yogyakarta" />
+                        <MenuItem value={"BDG"} primaryText="Bandung" />
+                        <MenuItem value={"JKT"} primaryText="Jakarta" />
+                        <MenuItem value={"SBY"} primaryText="Surabaya" />
                     </SelectField>
                 </div>
             </div>
