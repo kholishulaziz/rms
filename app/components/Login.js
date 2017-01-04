@@ -9,7 +9,7 @@ import TextField from 'material-ui/TextField';
 import ActionAccountCircle from 'material-ui/svg-icons/action/account-circle';
 import ActionLock from 'material-ui/svg-icons/action/lock';
 
-import Constants from '../Constants';
+import Constants from '../data/Constants';
 
 class Login extends Component {
   constructor(props, context) {

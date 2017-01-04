@@ -14,6 +14,10 @@ class EmployeeListDetail extends Component {
         super(props, context);
     }
 
+    handleTouchTap(currentEmployee){
+        this.props.setCurrentEmployee(currentEmployee);
+    }
+
     render() {
 
         // lookup
@@ -64,7 +68,7 @@ class EmployeeListDetail extends Component {
                     <ListItem
                         leftAvatar={<Avatar src={require("../images/kholishul_a.jpg")}/>}
                         rightIcon={<ToogleRadioButtonChecked color={indigo400}/>}
-                        onClick={this.props.handleTouchTap.bind(this, this.props.employee)}
+                        onClick={this.handleTouchTap.bind(this, this.props.employee)}
                     >
                     <span>
                         <b>{this.props.employee.firstName} {this.props.employee.lastName}</b><br/>
