@@ -65,7 +65,6 @@ class SortingDialog extends Component {
         });
         sortingData.reverse();
         this.props.setCurrentEmployee(employees[0]);
-        this.props.handleResetSearch();
         this.handleCloseSortingDialog();
     }
 

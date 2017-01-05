@@ -3,7 +3,7 @@ import React, {Component} from 'react';
 import Avatar from 'material-ui/Avatar';
 import {List, ListItem} from 'material-ui/List';
 import Paper from 'material-ui/Paper';
-import {indigo400} from 'material-ui/styles/colors';
+import {indigo400, grey400} from 'material-ui/styles/colors';
 
 import HardwareKeyboardArrowRight from 'material-ui/svg-icons/hardware/keyboard-arrow-right';
 import ToogleRadioButtonChecked from 'material-ui/svg-icons/toggle/radio-button-checked';
@@ -69,7 +69,7 @@ class EmployeeListDetail extends Component {
                 <Paper zDepth={1} >
                     <ListItem
                         leftAvatar={<Avatar src={require("../images/kholishul_a.jpg")}/>}
-                        rightIcon={<ToogleRadioButtonChecked color={indigo400}/>}
+                        rightIcon={<ToogleRadioButtonChecked color={this.props.employee.active? indigo400:grey400}/>}
                         onClick={this.handleTouchTap.bind(this, this.props.employee)}
                     >
                     <span>

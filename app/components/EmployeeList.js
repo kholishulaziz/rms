@@ -10,12 +10,13 @@ import ActionSearch from 'material-ui/svg-icons/action/search';
 import NavigationClose from 'material-ui/svg-icons/navigation/close';
 import AvSortByAlpha from 'material-ui/svg-icons/av/sort-by-alpha';
 import ContentFilterList from 'material-ui/svg-icons/content/filter-list';
+import AVPlaylistAddCheck from 'material-ui/svg-icons/av/playlist-add-check';
 
 import EmployeeListDetail from './EmployeeListDetail'
 import SortingDialog from './SortingDialog'
 import FilterDialog from './FilterDialog'
 
-const KEYS_TO_FILTERS = ['firstName','lastName','grade','office'];
+const KEYS_TO_FILTERS = ['firstName','lastName'];
 
 class EmployeeList extends Component {
 
@@ -25,6 +26,8 @@ class EmployeeList extends Component {
             searchMode: false,
             searchQuery: '',
             searchEmployee: {},
+            filterMode: false,
+            filterEmployee: {},
             sortingDialogIsOpen: false,
             filterDialogIsOpen: false,
         }
@@ -38,13 +41,20 @@ class EmployeeList extends Component {
     }
 
     handleSearchEmployee(event){
-        var employees = this.props.employees;
+        var employees = {};
+        if (this.state.filterMode) {
+            employees = this.state.filterEmployee;
+        } else {
+            employees = this.props.employees;
+        }
         if (event.target.value.length >= 3){
             var searchEmployee = employees.filter(createFilter(event.target.value, KEYS_TO_FILTERS));
             this.setState({
                 searchEmployee: searchEmployee,
                 searchMode: true,
             });
+            //console.log("-- Search --")
+            //console.log(searchEmployee);
         } else {
             this.handleUnSearchEmployee(event);
         }
@@ -62,6 +72,15 @@ class EmployeeList extends Component {
         this.setState({
             searchMode: false,
             searchQuery: ''
+        });
+    }
+
+    handleSetFilterEmployee(filterEmployee, filterMode){
+        //console.log("-- Filter --")
+        //console.log(filterEmployee);
+        this.setState({
+            filterEmployee: filterEmployee,
+            filterMode: filterMode,
         });
     }
 
@@ -90,24 +109,22 @@ class EmployeeList extends Component {
     }
 
     render() {
-        var employeeListDetail = {};
+        var employee = {}
         if (this.state.searchMode){
-            employeeListDetail = this.state.searchEmployee.map( employee =>
-            <EmployeeListDetail
-                key={employee.id}
-                employee={employee}
-                setCurrentEmployee={this.props.setCurrentEmployee.bind(this)}
-            />
-            );
+            employee = this.state.searchEmployee;
+        } else if (this.state.filterMode){
+            employee = this.state.filterEmployee;
         } else {
-            employeeListDetail = this.props.employees.map( employee =>
+            employee = this.props.employees;
+        }
+
+        var employeeListDetail = employee.map( employee =>
             <EmployeeListDetail
                 key={employee.id}
                 employee={employee}
                 setCurrentEmployee={this.props.setCurrentEmployee.bind(this)}
             />
-            );
-        }
+        );
 
         return(
             <div>
@@ -125,12 +142,15 @@ class EmployeeList extends Component {
                         style ={{width: '40%'}}
                         inputStyle={{color: white}}
                         hintStyle={{color: white}}/>
-                    <span className="panel-list-btn panel-list-length">{employeeListDetail.length}</span>
-                    <IconButton tooltip="Filter" className="panel-list-btn"
+                    <span className="panel-list-btn panel-list-length"><b>{employeeListDetail.length}</b></span>
+                    <IconButton tooltip={this.state.filterMode? "Filter On":"Filter Off"} className="panel-list-btn"
+                        disabled={this.state.searchMode?true:false}
                         onTouchTap={this.handleOpenFilterDialog.bind(this)}>
-                        <ContentFilterList color={white} />
+                        {   this.state.filterMode ? <AVPlaylistAddCheck color={white} /> :
+                            <ContentFilterList color={white} /> }
                     </IconButton>
                     <IconButton tooltip="Order" className="panel-list-btn"
+                        disabled={this.state.searchMode?true:false}
                         onTouchTap={this.handleOpenSortingDialog.bind(this)}>
                         <AvSortByAlpha color={white} />
                     </IconButton>
@@ -148,18 +168,17 @@ class EmployeeList extends Component {
 
                 </div>
                 <SortingDialog
-                    employees = {this.props.employees}
+                    employees = {employee}
                     sortingDialogIsOpen = {this.state.sortingDialogIsOpen}
                     handleCloseSortingDialog = {this.handleCloseSortingDialog.bind(this)}
                     setCurrentEmployee = {this.props.setCurrentEmployee.bind(this)}
-                    handleResetSearch = {this.handleResetSearch.bind(this)}
                 />
                 <FilterDialog
                     employees = {this.props.employees}
                     filterDialogIsOpen = {this.state.filterDialogIsOpen}
                     handleCloseFilterDialog = {this.handleCloseFilterDialog.bind(this)}
+                    handleSetFilterEmployee = {this.handleSetFilterEmployee.bind(this)}
                     setCurrentEmployee = {this.props.setCurrentEmployee.bind(this)}
-                    handleResetSearch = {this.handleResetSearch.bind(this)}
                 />
             </div>
         );
