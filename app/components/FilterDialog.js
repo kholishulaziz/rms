@@ -2,45 +2,58 @@ import React, {Component} from 'react';
 import update from 'react-addons-update';
 import SearchInput, {createFilter} from 'react-search-input';
 
-import Dialog from 'material-ui/Dialog';
-import RaisedButton from 'material-ui/RaisedButton';
-import {List, ListItem} from 'material-ui/List';
 import Checkbox from 'material-ui/Checkbox';
-
+import Dialog from 'material-ui/Dialog';
+import {List, ListItem} from 'material-ui/List';
+import RaisedButton from 'material-ui/RaisedButton';
+import Toggle from 'material-ui/Toggle';
 import MapsLayers from 'material-ui/svg-icons/maps/layers';
+
+import LookupData from '../data/LookupData';
 
 class FilterDialog extends Component {
 
     constructor(props, context) {
         super(props, context);
         this.state = {
-            grade: {
-                SE1: true,
-                SE2: true,
-                SE3: true,
-                SE4: true,
-            },
-            office: {
-                DPS: true,
-                JOG: true,
-                BDG: true,
-                JKT: true,
-                SBY: true
-            }
+            active: false,
+            lookupGrade: LookupData.grade,
+            lookupOffice: LookupData.office,
+            grade: LookupData.gradeConfig,
+            office: LookupData.officeConfig,
         }
     }
 
+    // working
+    handleGenerateGrade(){
+        var lookupGrade = this.state.lookupGrade
+        var gradeGenerate = this.createObject(lookupGrade);
+        console.log(gradeGenerate);
+    }
+
+    // working
+    createObject(object){
+        var keys  = Object.keys(object).map( o => object[o].code)
+        var obj  = {};
+        for (let key of keys){
+            obj[key] = false;
+        }
+        return obj;
+    }
+
+    handleToggle() {
+        this.setState({
+            active: !(this.state.active),
+        });
+    };
+
     handleChangeAllGradeValue(event, checked) {
-        var nextState = update(this.state, {
-             grade: {
-                SE1: {$set: event.target.checked},
-                SE2: {$set: event.target.checked},
-                SE3: {$set: event.target.checked},
-                SE4: {$set: event.target.checked}
-             }
+        var grade = this.state.grade;
+        Object.keys(grade).forEach(function (key) {
+          grade[key] = event.target.checked;
         });
         this.setState({
-            grade: nextState.grade
+            grade: grade
         });
     }
 
@@ -54,17 +67,12 @@ class FilterDialog extends Component {
     }
 
     handleChangeAllOfficeValue(event, checked) {
-        var nextState = update(this.state, {
-             office: {
-                DPS: {$set: event.target.checked},
-                JOG: {$set: event.target.checked},
-                BDG: {$set: event.target.checked},
-                JKT: {$set: event.target.checked},
-                SBY: {$set: event.target.checked},
-             }
+        var office = this.state.office;
+        Object.keys(office).forEach(function (key) {
+          office[key] = event.target.checked;
         });
         this.setState({
-            office: nextState.office
+            office: office
         });
     }
 
@@ -80,22 +88,37 @@ class FilterDialog extends Component {
     handleFilterOption(){
     	// working
     	var employees   = this.props.employees;
-        var grade       = (this.state.grade.SE1) && (this.state.grade.SE2) &&
-                            (this.state.grade.SE3) && (this.state.grade.SE4);
-        var office      = (this.state.office.DPS) && (this.state.office.JOG) && (this.state.office.BDG) &&
-                            (this.state.office.JKT) && (this.state.office.SBY);
-        if (!grade){
-            employees = this.filterByGrade(employees);
-        }
-        if (!office){
-            employees = this.filterByOffice(employees);
-        }
-        var filterMode = !(grade && office);
-        this.props.handleSetFilterEmployee(employees, filterMode);
+    	var active      = this.state.active;
+
+        var grade = this.state.grade
+        var office = this.state.office
+        var allGrade = true;
+        var allOffice = true;
+        Object.keys(grade).forEach(function(key){
+            allGrade = allGrade && grade[key]
+        });
+        Object.keys(office).forEach(function(key){
+            allOffice = allOffice && office[key]
+        });
+
+        if (active) employees = this.filterByStatus(employees);
+        if (!allGrade)  employees = this.filterByGrade(employees);
+        if (!allOffice) employees = this.filterByOffice(employees);
+
+        var filterByCriteria = !(allGrade && allOffice);
+        var filterMode = active || filterByCriteria;
+        this.props.handleSetFilterEmployee(employees, filterMode, filterByCriteria);
         if (employees.length){
             this.props.setCurrentEmployee(employees[0]);
         }
         this.handleCloseFilterDialog();
+    }
+
+    filterByStatus(employees){
+        var toDelete = new Set([false]);
+        var filterEmployee= employees.filter(employee => !toDelete.has(employee.active));
+        //console.log(filterEmployee);
+        return filterEmployee;
     }
 
     filterByGrade(employees){
@@ -132,10 +155,40 @@ class FilterDialog extends Component {
             />
         ];
 
-        var grade = (this.state.grade.SE1) && (this.state.grade.SE2) &&
-            (this.state.grade.SE3) && (this.state.grade.SE4);
-        var office = (this.state.office.DPS) && (this.state.office.JOG) && (this.state.office.BDG) &&
-            (this.state.office.JKT) && (this.state.office.SBY);
+        var lookupGrade = this.state.lookupGrade.map ( grade =>
+            <ListItem
+                key={grade.code}
+                primaryText={grade.desc}
+                leftCheckbox={
+                    <Checkbox
+                        checked={this.state.grade[grade.code]}
+                        onClick={(event, checked) => this.handleChangeGradeValue(event, checked, grade.code)}
+                    />}
+                />
+        );
+
+        var lookupOffice = this.state.lookupOffice.map ( office =>
+            <ListItem
+                key={office.code}
+                primaryText={office.desc}
+                leftCheckbox={
+                    <Checkbox
+                        checked={this.state.office[office.code]}
+                        onClick={(event, checked) => this.handleChangeOfficeValue(event, checked, office.code)}
+                    />}
+                />
+        );
+
+        var grade = this.state.grade
+        var office = this.state.office
+        var allGrade = true;
+        var allOffice = true;
+        Object.keys(grade).forEach(function(key){
+            allGrade = allGrade && grade[key]
+        });
+        Object.keys(office).forEach(function(key){
+            allOffice = allOffice && office[key]
+        });
 
         return(
             <Dialog
@@ -148,107 +201,31 @@ class FilterDialog extends Component {
                 >
                     <List className="content-min-container">
                         <ListItem
+                            primaryText={this.state.active?"Only Active Employee":"All Employee"}
+                            rightToggle={<Toggle
+                                    toggled={this.state.active}
+                                    onToggle={this.handleToggle.bind(this)}
+                                />}
+                            />
+                        <ListItem
                             primaryText="Grade"
                             leftCheckbox={
                                 <Checkbox
-                                    checked={grade}
+                                    checked={allGrade}
                                     onClick={(event, checked) => this.handleChangeAllGradeValue(event, checked)}
                                 />}
-                            initiallyOpen={!grade}
-                            nestedItems={[
-                                <ListItem
-                                    key={"SE1"}
-                                    primaryText="SE - JP"
-                                    leftCheckbox={
-                                        <Checkbox
-                                            checked={this.state.grade.SE1}
-                                            onClick={(event, checked) => this.handleChangeGradeValue(event, checked, 'SE1')}
-                                        />}
-                                />,
-                                <ListItem
-                                    key={"SE2"}
-                                    primaryText="SE - PG"
-                                    leftCheckbox={
-                                        <Checkbox
-                                            checked={this.state.grade.SE2}
-                                            onClick={(event, checked) => this.handleChangeGradeValue(event, checked, 'SE2')}
-                                        />}
-                                />,
-                                <ListItem
-                                    key={"SE3"}
-                                    primaryText="SE - AP"
-                                    leftCheckbox={
-                                        <Checkbox
-                                            checked={this.state.grade.SE3}
-                                            onClick={(event, checked) => this.handleChangeGradeValue(event, checked, 'SE3')}
-                                        />}
-                                />,
-                                <ListItem
-                                    key={"SE4"}
-                                    primaryText="SE - AN"
-                                    leftCheckbox={
-                                        <Checkbox
-                                            checked={this.state.grade.SE4}
-                                            onClick={(event, checked) => this.handleChangeGradeValue(event, checked, 'SE4')}
-                                        />}
-                                />,
-                            ]}
+                            initiallyOpen={!allGrade}
+                            nestedItems={lookupGrade}
                         />
                         <ListItem
                             primaryText="Office"
                             leftCheckbox={
                                 <Checkbox
-                                    checked={office}
+                                    checked={allOffice}
                                     onClick={(event, checked) => this.handleChangeAllOfficeValue(event, checked)}
                                 />}
-                            initiallyOpen={!office}
-                            nestedItems={[
-                                <ListItem
-                                    key={"DPS"}
-                                    primaryText="Bali"
-                                    leftCheckbox={
-                                        <Checkbox
-                                            checked={this.state.office.DPS}
-                                            onClick={(event, checked) => this.handleChangeOfficeValue(event, checked, 'DPS')}
-                                        />}
-                                />,
-                                <ListItem
-                                    key={"JOG"}
-                                    primaryText="Yogyakarta"
-                                    leftCheckbox={
-                                        <Checkbox
-                                            checked={this.state.office.JOG}
-                                            onClick={(event, checked) => this.handleChangeOfficeValue(event, checked, 'JOG')}
-                                        />}
-                                />,
-                                <ListItem
-                                    key={"BDG"}
-                                    primaryText="Bandung"
-                                    leftCheckbox={
-                                        <Checkbox
-                                            checked={this.state.office.BDG}
-                                            onClick={(event, checked) => this.handleChangeOfficeValue(event, checked, 'BDG')}
-                                        />}
-                                />,
-                                <ListItem
-                                    key={"JKT"}
-                                    primaryText="Jakarta"
-                                    leftCheckbox={
-                                        <Checkbox
-                                            checked={this.state.office.JKT}
-                                            onClick={(event, checked) => this.handleChangeOfficeValue(event, checked, 'JKT')}
-                                        />}
-                                />,
-                                <ListItem
-                                    key={"SBY"}
-                                    primaryText="Surabaya"
-                                    leftCheckbox={
-                                        <Checkbox
-                                            checked={this.state.office.SBY}
-                                            onClick={(event, checked) => this.handleChangeOfficeValue(event, checked, 'SBY')}
-                                        />}
-                                />,
-                            ]}
+                            initiallyOpen={!allOffice}
+                            nestedItems={lookupOffice}
                         />
                     </List>
             </Dialog>
