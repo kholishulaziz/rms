@@ -4,10 +4,15 @@ import update from 'react-addons-update';
 import SelectField from 'material-ui/SelectField';
 import MenuItem from 'material-ui/MenuItem';
 
+import LookupData from '../data/LookupData';
+
 class DetailLocation extends Component {
 
     constructor(props, context) {
         super(props, context);
+        this.state = {
+            lookupOffice: LookupData.office,
+        }
     }
 
     handleChangeValue(event, type) {
@@ -33,6 +38,10 @@ class DetailLocation extends Component {
 
     render() {
 
+        var lookupOffice = this.state.lookupOffice.map ( office =>
+            <MenuItem key={office.code} value={office.code} primaryText={office.desc} />
+        );
+
         return(
             <div className="content-container">
                 <h2 className="content-header">Location</h2>
@@ -43,11 +52,7 @@ class DetailLocation extends Component {
                         errorText={this.props.employee.office==""?this.props.errorTextRequired:""}
                         onChange={(event, index, value) =>  this.handleChangeSelectValue(event, index, value, 'office')}
                         disabled={this.props.viewMode} >
-                        <MenuItem value={"DPS"} primaryText="Bali" />
-                        <MenuItem value={"JOG"} primaryText="Yogyakarta" />
-                        <MenuItem value={"BDG"} primaryText="Bandung" />
-                        <MenuItem value={"JKT"} primaryText="Jakarta" />
-                        <MenuItem value={"SBY"} primaryText="Surabaya" />
+                        {lookupOffice}
                     </SelectField>
                 </div>
             </div>

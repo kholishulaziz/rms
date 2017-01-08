@@ -23,21 +23,6 @@ const LookupData = {
         },
 
         {
-            code: 'VP',
-            type: 'MJF',
-            desc: 'MJF - VP'
-        },
-        {
-            code: 'GM',
-            type: 'MJF',
-            desc: 'MJF - GM'
-        },
-        {
-            code: 'AM',
-            type: 'MJF',
-            desc: 'MJF - AM'
-        },
-        {
             code: 'SM',
             type: 'MJF',
             desc: 'MJF - SM'
@@ -54,9 +39,6 @@ const LookupData = {
         'SE2'   : true,
         'SE3'   : true,
         'SE4'   : true,
-        'VP'    : true,
-        'GM'    : true,
-        'AM'    : true,
         'SM'    : true,
         'PM'    : true,
     },

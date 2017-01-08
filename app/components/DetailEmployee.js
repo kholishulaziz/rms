@@ -7,10 +7,15 @@ import SelectField from 'material-ui/SelectField';
 import MenuItem from 'material-ui/MenuItem';
 import TextField from 'material-ui/TextField';
 
+import LookupData from '../data/LookupData';
+
 class DetailEmployee extends Component {
 
     constructor(props, context) {
         super(props, context);
+        this.state = {
+            lookupGrade: LookupData.grade,
+        }
     }
 
     handleChangeValue(event, type) {
@@ -35,6 +40,11 @@ class DetailEmployee extends Component {
     }
 
     render() {
+
+        var lookupGrade = this.state.lookupGrade.map ( grade =>
+            <MenuItem key={grade.code} value={grade.code} primaryText={grade.desc} />
+        );
+
         return(
             <div className="content-container">
                 <h2 className="content-header">Employee</h2>
@@ -129,10 +139,7 @@ class DetailEmployee extends Component {
                         errorText={this.props.employee.grade==""?this.props.errorTextRequired:""}
                         onChange={(event, index, value) =>  this.handleChangeSelectValue(event, index, value, 'grade')}
                         disabled={this.props.viewMode} >
-                        <MenuItem value={"SE1"} primaryText="SE - JP" />
-                        <MenuItem value={"SE2"} primaryText="SE - PG" />
-                        <MenuItem value={"SE3"} primaryText="SE - AP" />
-                        <MenuItem value={"SE4"} primaryText="SE - AN" />
+                        {lookupGrade}
                     </SelectField><br />
                     <SelectField
                         value={this.props.employee.division}
