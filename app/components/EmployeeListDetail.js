@@ -8,10 +8,17 @@ import {indigo400, grey400} from 'material-ui/styles/colors';
 import HardwareKeyboardArrowRight from 'material-ui/svg-icons/hardware/keyboard-arrow-right';
 import ToogleRadioButtonChecked from 'material-ui/svg-icons/toggle/radio-button-checked';
 
+import LookupData from '../data/LookupData';
+
 class EmployeeListDetail extends Component {
 
     constructor(props, context) {
         super(props, context);
+        this.state = {
+            lookupDivision: LookupData.division,
+            lookupGrade: LookupData.grade,
+            lookupOffice: LookupData.office,
+        }
     }
 
     handleTouchTap(currentEmployee){
@@ -20,49 +27,9 @@ class EmployeeListDetail extends Component {
 
     render() {
 
-        // lookup
-        var grade = ""
-        if (this.props.employee.grade === "SE1") {
-            grade = "SE - JP";
-        } else if (this.props.employee.grade === "SE2") {
-            grade = "SE - PG";
-        } else if (this.props.employee.grade === "SE3") {
-            grade = "SE - AP";
-        } else if (this.props.employee.grade === "SE4") {
-            grade = "SE - AN";
-        } else {
-            grade = " - ";
-        }
-        // lookup
-        var division = ""
-        if (this.props.employee.division === "SWDR") {
-            division = "SWD Red";
-        } else if (this.props.employee.division === "SWDG") {
-            division = "SWD Green";
-        } else if (this.props.employee.division === "SWDB") {
-            division = "SWD Blue";
-        } else if (this.props.employee.division === "SWDBl") {
-            division = "SWD Black";
-        } else if (this.props.employee.division === "CDC") {
-            division = "CDC"
-        } else {
-            division = " - ";
-        }
-        // lookup
-        var office = ""
-        if (this.props.employee.office === "JKT") {
-            office = "Jakarta";
-        } else if (this.props.employee.office === "JOG") {
-            office = "Yogyakarta";
-        } else if (this.props.employee.office === "SBY") {
-            office = "Surabaya";
-        } else if (this.props.employee.office === "DPS") {
-            office = "Bali"
-        } else if (this.props.employee.office === "BDG") {
-            office = "Bandung"
-        } else {
-            office = " - ";
-        }
+        var division = this.state.lookupDivision.filter(div => (div.code == this.props.employee.division));
+        var grade = this.state.lookupGrade.filter(grade => (grade.code == this.props.employee.grade));
+        var office = this.state.lookupOffice.filter(office => (office.code == this.props.employee.office));
 
         return(
             <div>
@@ -76,8 +43,8 @@ class EmployeeListDetail extends Component {
                         <b>{this.props.employee.firstName} {this.props.employee.lastName}</b><br/>
                     </span>
                     <span>
-                        <small>{grade}, {division}<br/>
-                        {office}, {this.props.employee.phone}</small>
+                        <small>{grade[0].desc}, {division[0].desc}<br/>
+                        {office[0].desc}, {this.props.employee.phone}</small>
                     </span>
                     </ListItem>
                 </Paper>

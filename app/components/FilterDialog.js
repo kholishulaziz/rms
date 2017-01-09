@@ -199,7 +199,7 @@ class FilterDialog extends Component {
                 contentStyle={{minWidth: "320px", maxWidth: "450px"}}
                 autoScrollBodyContent={true}
                 >
-                    <List className="content-min-container">
+                    <List className="content-container">
                         <ListItem
                             primaryText={this.state.active?"Only Active Employee":"All Employee"}
                             rightToggle={<Toggle

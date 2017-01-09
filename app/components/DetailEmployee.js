@@ -15,6 +15,7 @@ class DetailEmployee extends Component {
         super(props, context);
         this.state = {
             lookupGrade: LookupData.grade,
+            lookupDivision: LookupData.division,
         }
     }
 
@@ -43,6 +44,9 @@ class DetailEmployee extends Component {
 
         var lookupGrade = this.state.lookupGrade.map ( grade =>
             <MenuItem key={grade.code} value={grade.code} primaryText={grade.desc} />
+        );
+        var lookupDivision = this.state.lookupDivision.map ( div =>
+            <MenuItem key={div.code} value={div.code} primaryText={div.desc} />
         );
 
         return(
@@ -147,11 +151,7 @@ class DetailEmployee extends Component {
                         errorText={this.props.employee.division==""?this.props.errorTextRequired:""}
                         onChange={(event, index, value) =>  this.handleChangeSelectValue(event, index, value, 'division')}
                         disabled={this.props.viewMode} >
-                        <MenuItem value={"SWDR"} primaryText="SWD Red" />
-                        <MenuItem value={"SWDG"} primaryText="SWD Green" />
-                        <MenuItem value={"SWDB"} primaryText="SWD Blue" />
-                        <MenuItem value={"SWDBl"} primaryText="SWD Black" />
-                        <MenuItem value={"CDC"} primaryText="CDC" />
+                        {lookupDivision}
                     </SelectField><br />
                     <TextField
                         value={this.props.employee.email}

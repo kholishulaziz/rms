@@ -27,6 +27,7 @@ class EmployeeList extends Component {
             searchQuery: '',
             searchEmployee: {},
             filterMode: false,
+            filterByCriteria: false,
             filterEmployee: {},
             sortingDialogIsOpen: false,
             filterDialogIsOpen: false,
@@ -75,12 +76,13 @@ class EmployeeList extends Component {
         });
     }
 
-    handleSetFilterEmployee(filterEmployee, filterMode){
+    handleSetFilterEmployee(filterEmployee, filterMode, filterByCriteria){
         //console.log("-- Filter --")
         //console.log(filterEmployee);
         this.setState({
             filterEmployee: filterEmployee,
             filterMode: filterMode,
+            filterByCriteria: filterByCriteria,
         });
     }
 
@@ -143,10 +145,10 @@ class EmployeeList extends Component {
                         inputStyle={{color: white}}
                         hintStyle={{color: white}}/>
                     <span className="panel-list-btn panel-list-length"><b>{employeeListDetail.length}</b></span>
-                    <IconButton tooltip={this.state.filterMode? "Filter On":"Filter Off"} className="panel-list-btn"
+                    <IconButton tooltip={this.state.filterByCriteria? "Filter On":"Filter Off"} className="panel-list-btn"
                         disabled={this.state.searchMode?true:false}
                         onTouchTap={this.handleOpenFilterDialog.bind(this)}>
-                        {   this.state.filterMode ? <AVPlaylistAddCheck color={white} /> :
+                        {   this.state.filterByCriteria ? <AVPlaylistAddCheck color={white} /> :
                             <ContentFilterList color={white} /> }
                     </IconButton>
                     <IconButton tooltip="Order" className="panel-list-btn"

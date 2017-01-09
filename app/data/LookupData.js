@@ -79,6 +79,34 @@ const LookupData = {
         'SBY'   : true,
     },
 
+    division: [
+        {
+            code: 'SWDR',
+            type: 'DIV',
+            desc: 'SWD Red'
+        },
+        {
+            code: 'SWDG',
+            type: 'DIV',
+            desc: 'SWD Green'
+        },
+        {
+            code: 'SWDB',
+            type: 'DIV',
+            desc: 'SWD Blue'
+        },
+        {
+            code: 'SWDBl',
+            type: 'DIV',
+            desc: 'SWD Black'
+        },
+        {
+            code: 'CDC',
+            type: 'DIV',
+            desc: 'CDC'
+        },
+    ],
+
 }
 
 export default LookupData;

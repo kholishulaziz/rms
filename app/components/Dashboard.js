@@ -16,12 +16,15 @@ import EmployeeDialog from './EmployeeDialog'
 import EmployeeList from './EmployeeList'
 import EmployeeTab from './EmployeeTab'
 
+import LookupData from '../data/LookupData';
+
 class Dashboard extends Component {
     constructor(props, context) {
         super(props, context);
         this.state = {
             employees: EmployeesData,
             employee: EmployeesData[0],
+            lookupGrade: LookupData.grade,
         }
         console.log("-- Init State --");
         console.log(this.state);
@@ -40,19 +43,8 @@ class Dashboard extends Component {
     }
 
     render() {
-        // lookup
-        var grade = ""
-        if (this.state.employee.grade === "SE1") {
-            grade = "SE - JP";
-        } else if (this.state.employee.grade === "SE2") {
-            grade = "SE - PG";
-        } else if (this.state.employee.grade === "SE3") {
-            grade = "SE - AP";
-        } else if (this.state.employee.grade === "SE4") {
-            grade = "SE - AN";
-        } else {
-            grade = " - ";
-        }
+
+        var grade = this.state.lookupGrade.filter(grade => (grade.code == this.state.employee.grade));
 
         return (
             <div>
@@ -66,7 +58,7 @@ class Dashboard extends Component {
                         <div className="app-bar-user-info">
                             <span>
                                 {this.state.employee.firstName} {this.state.employee.lastName}<br />
-                                <small>{grade}</small>
+                                <small>{grade[0].desc}</small>
                             </span>
                         </div>
                         <IconButton tooltip="Setting" iconStyle={Constants.mediumIcon}>
