@@ -35,14 +35,14 @@ class EmployeeListDetail extends Component {
             <div>
                 <Paper zDepth={1} >
                     <ListItem
-                        leftAvatar={<Avatar src={require("../images/kholishul_a.jpg")}/>}
+                        leftAvatar={this.props.employee.active?
+                            <Avatar src={require("../images/kholishul_a.jpg")}/>:
+                            <Avatar>{this.props.employee.firstName.charAt(0)}</Avatar>}
                         rightIcon={<ToogleRadioButtonChecked color={this.props.employee.active? indigo400:grey400}/>}
                         onClick={this.handleTouchTap.bind(this, this.props.employee)}
                     >
                     <span>
                         <b>{this.props.employee.firstName} {this.props.employee.lastName}</b><br/>
-                    </span>
-                    <span>
                         <small>{grade[0].desc}, {division[0].desc}<br/>
                         {office[0].desc}, {this.props.employee.phone}</small>
                     </span>
