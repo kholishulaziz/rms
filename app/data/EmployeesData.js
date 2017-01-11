@@ -16,7 +16,11 @@ const EmployeesData = [
         division: 'CDC',
         email: 'kholishul.aziz@mitrais.com',
         office: 'JOG',
-        active: true
+        active: true,
+        dependents: [
+            {name: "Aziz's Wife", dob: new Date(1991,3,1), gender: 'F', type: 'W', active: true},
+            {name: "Aziz's Jr", dob: new Date(2017,3,1), gender: 'M', type: 'C', active: true},
+        ],
     },
     {
         id: 'aldebaran_a',
@@ -35,7 +39,10 @@ const EmployeesData = [
         division: 'SWDBl',
         email: 'aldebaran.aziz@mitrais.com',
         office: 'SBY',
-        active: true
+        active: true,
+        dependents: [
+            {name: "Aldebaran's Wife", dob: new Date(1991,3,1), gender: 'F', type: 'W', active: false}
+        ],
     },
     {
         id: 'ricard_g',
@@ -54,7 +61,8 @@ const EmployeesData = [
         division: 'SWDR',
         email: 'ricard.gideon@mitrais.com',
         office: 'JKT',
-        active: false
+        active: false,
+        dependents: [],
     },
     {
         id: 'mary_w',
@@ -73,7 +81,8 @@ const EmployeesData = [
         division: 'SWDG',
         email: 'mary.watson@mitrais.com',
         office: 'JKT',
-        active: true
+        active: true,
+        dependents: [],
     },
     {
         id: 'emma_w',
@@ -92,7 +101,8 @@ const EmployeesData = [
         division: 'SWDB',
         email: 'emma.watson@mitrais.com',
         office: 'DPS',
-        active: true
+        active: true,
+        dependents: [],
     },
     {
         id: 'paul_w',
@@ -111,7 +121,8 @@ const EmployeesData = [
         division: 'SWDR',
         email: 'dr.watson@mitrais.com',
         office: 'JOG',
-        active: true
+        active: true,
+        dependents: [],
     },
     {
         id: 'dr_w',
@@ -130,9 +141,9 @@ const EmployeesData = [
         division: 'SWDR',
         email: 'dr.watson@mitrais.com',
         office: 'JOG',
-        active: true
+        active: true,
+        dependents: [],
     },
-
     {
         id: 'johnny_w',
         firstName: 'Johnny',
@@ -150,7 +161,8 @@ const EmployeesData = [
         division: 'SWDR',
         email: 'dr.watson@mitrais.com',
         office: 'DPS',
-        active: true
+        active: true,
+        dependents: [],
     },
     {
         id: 'sherry_w',
@@ -169,7 +181,8 @@ const EmployeesData = [
         division: 'SWDR',
         email: 'dr.watson@mitrais.com',
         office: 'BDG',
-        active: false
+        active: false,
+        dependents: [],
     },
     {
         id: 'aziz_m',
@@ -188,7 +201,8 @@ const EmployeesData = [
         division: 'CDC',
         email: 'muhammad.aziz@mitrais.com',
         office: 'JOG',
-        active: true
+        active: true,
+        dependents: [],
     },
 ];
 

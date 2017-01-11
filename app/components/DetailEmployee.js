@@ -23,21 +23,25 @@ class DetailEmployee extends Component {
         var nextState = update(this.props, {
              employee: {[type]: {$set: event.target.value}}
         });
-        this.props.setCurrentEmployee(nextState.employee);
+        this.handleUpdateDetailEmployee(nextState.employee);
     }
 
     handleChangeSelectValue(event, index, value, type) {
         var nextState = update(this.props, {
              employee: {[type]: {$set: value}}
         });
-        this.props.setCurrentEmployee(nextState.employee);
+        this.handleUpdateDetailEmployee(nextState.employee);
     }
 
     handleChangeDateValue(event, date, type) {
         var nextState = update(this.props, {
              employee: {[type]: {$set: date}}
         });
-        this.props.setCurrentEmployee(nextState.employee);
+        this.handleUpdateDetailEmployee(nextState.employee);
+    }
+
+    handleUpdateDetailEmployee(employee){
+        this.props.setCurrentEmployee(employee);
     }
 
     render() {

@@ -26,6 +26,7 @@ class Dashboard extends Component {
             employee: EmployeesData[0],
             lookupGrade: LookupData.grade,
         }
+        console.log(new Date())
         console.log("-- Init State --");
         console.log(this.state);
     }

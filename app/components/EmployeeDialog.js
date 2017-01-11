@@ -8,6 +8,7 @@ import {Step, Stepper, StepLabel} from 'material-ui/Stepper';
 import ContentAdd from 'material-ui/svg-icons/content/add';
 
 import DetailEmployee from './DetailEmployee'
+import DetailDependent from './DetailDependent'
 import DetailLocation from './DetailLocation'
 
 class EmployeeDialog extends Component {
@@ -34,7 +35,9 @@ class EmployeeDialog extends Component {
                  grade: '',
                  division: '',
                  email: '',
-                 office: ''
+                 office: '',
+                 active: true,
+                 dependents: [],
             }
         }
     }
@@ -66,7 +69,9 @@ class EmployeeDialog extends Component {
                  grade: '',
                  division: '',
                  email: '',
-                 office: ''
+                 office: '',
+                 active: true,
+                 dependents: [],
             }
         });
     }
@@ -87,7 +92,14 @@ class EmployeeDialog extends Component {
             case 2:
                 return 'Grade';
             case 3:
-                return 'Family member';
+                return (
+                    <DetailDependent
+                        employee={this.state.employee}
+                        viewMode={false}
+                        errorTextRequired={this.state.errorTextRequired}
+                        setCurrentEmployee={this.setNewEmployee.bind(this)}
+                    />
+                );
             case 4:
                 return 'Address';
             default:
@@ -146,6 +158,13 @@ class EmployeeDialog extends Component {
             case 2:
                 break;
             case 3:
+                var dependents = this.state.employee.dependents;
+                if (dependents.length > 0){
+                    dependents.forEach ( dependent => {
+                        if (dependent.name=="" || dependent.gender=="" || dependent.type=="" )
+                            errorTextRequired = true;
+                    })
+                }
                 break;
             case 4:
                 break;
@@ -171,23 +190,6 @@ class EmployeeDialog extends Component {
         }
     };
 
-    handleChangeValue(event, type) {
-        var nextState = {};
-        nextState[type] = event.target.value;
-        this.setState(nextState);
-    }
-
-    handleChangeSelectValue(event, index, value, type) {
-        var nextState = {};
-        nextState[type] = value;
-        this.setState(nextState);
-    }
-
-    handleChangeDateValue(event, date, type) {
-        var nextState = {};
-        nextState[type] = date;
-        this.setState(nextState);
-    }
 
     render() {
         const {stepIndex} = this.state;

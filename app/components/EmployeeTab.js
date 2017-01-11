@@ -12,6 +12,8 @@ import MapsLayers from 'material-ui/svg-icons/maps/layers';
 import NotificationWc from 'material-ui/svg-icons/notification/wc';
 
 import DetailEmployee from './DetailEmployee'
+import DetailGrade from './DetailGrade'
+import DetailDependent from './DetailDependent'
 import DetailLocation from './DetailLocation'
 
 class EmployeeTab extends Component {
@@ -22,6 +24,7 @@ class EmployeeTab extends Component {
             deleteDialogIsOpen: false,
             validationDialogIsOpen: false,
             viewMode: true,
+            depErrorTextRequired: '',
         }
     }
 
@@ -32,13 +35,19 @@ class EmployeeTab extends Component {
     }
 
     handleUpdateEmployee(){
-        if (this.props.employee.firstName=="" || this.props.employee.lastName=="" || this.props.employee.gender==""
+        if (    // Detail Employee
+                this.props.employee.firstName=="" || this.props.employee.lastName=="" || this.props.employee.gender==""
                 /*|| this.props.employee.dob=="" ||*/ || this.props.employee.phone=="" || this.props.employee.subDivision==""
                 || this.props.employee.grade=="" || this.props.employee.division=="" || this.props.employee.email==""
+
+                // Detail Dependents
+                || ( this.checkDependent() )
+
+                // Detail Location
                 || this.props.employee.office==""
                 ){
-            // required fields are not filled yet
-            this.handleOpenValidationDialog();
+                    // required fields are not filled yet
+                    this.handleOpenValidationDialog();
         } else {
             var index = this.props.employees.map( (employee) => employee.id ).indexOf($("#employeeId").val())
             //console.log("-- Update Employee["+index+"] "+ $("#employeeId").val() +" --");
@@ -47,7 +56,8 @@ class EmployeeTab extends Component {
             employees[index] = this.props.employee;
             this.props.setEmployees(employees);
             this.setState({
-                viewMode: true
+                viewMode: true,
+                depErrorTextRequired: ''
             })
         }
     }
@@ -98,6 +108,21 @@ class EmployeeTab extends Component {
         });
     }
 
+    checkDependent(){
+        var rtn = false;
+        var dependents = this.props.employee.dependents;
+
+        if (dependents.length > 0){
+            dependents.forEach ( dependent => { if (dependent.name=="" || dependent.gender=="" || dependent.type=="" )
+                rtn = true;
+                this.setState({
+                    depErrorTextRequired: "This field is required!"
+                })
+            })
+        }
+        return rtn;
+    }
+
     render() {
         const actionsDeleteBtn = [
             <RaisedButton
@@ -137,14 +162,20 @@ class EmployeeTab extends Component {
                      </div>
                    </Tab>
                    <Tab icon={<MapsLayers />} >
-                     <div className="content-container">
-                       <h2 className="content-header">Grade</h2>
-                     </div>
+                        <DetailGrade
+                             employee={this.props.employee}
+                             viewMode={this.state.viewMode}
+                             errorTextRequired={this.state.depErrorTextRequired}
+                             setCurrentEmployee={this.props.setCurrentEmployee.bind(this)}
+                         />
                    </Tab>
                    <Tab icon={<NotificationWc />} >
-                     <div className="content-container">
-                       <h2 className="content-header">Family Member</h2>
-                     </div>
+                        <DetailDependent
+                            employee={this.props.employee}
+                            viewMode={this.state.viewMode}
+                            errorTextRequired={this.state.depErrorTextRequired}
+                            setCurrentEmployee={this.props.setCurrentEmployee.bind(this)}
+                        />
                    </Tab>
                    <Tab icon={<ActionHome />} >
                      <div className="content-container">
