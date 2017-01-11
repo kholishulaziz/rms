@@ -8,6 +8,7 @@ import {Step, Stepper, StepLabel} from 'material-ui/Stepper';
 import ContentAdd from 'material-ui/svg-icons/content/add';
 
 import DetailEmployee from './DetailEmployee'
+import DetailGrade from './DetailGrade'
 import DetailDependent from './DetailDependent'
 import DetailLocation from './DetailLocation'
 
@@ -38,6 +39,9 @@ class EmployeeDialog extends Component {
                  office: '',
                  active: true,
                  dependents: [],
+                 gradeHistory:[
+                    {startDate: new Object, endDate: new Object, grade: '', devStage: 0},
+                 ],
             }
         }
     }
@@ -72,6 +76,9 @@ class EmployeeDialog extends Component {
                  office: '',
                  active: true,
                  dependents: [],
+                 gradeHistory:[
+                     {startDate: new Object, endDate: new Object, grade: '', devStage: 0},
+                 ],
             }
         });
     }
@@ -90,7 +97,15 @@ class EmployeeDialog extends Component {
             case 1:
                 return 'History';
             case 2:
-                return 'Grade';
+                return (
+                    <DetailGrade
+                        employee={this.state.employee}
+                        viewMode={false}
+                        fromAddEmployee={true}
+                        errorTextRequired={this.state.errorTextRequired}
+                        setCurrentEmployee={this.setNewEmployee.bind(this)}
+                    />
+                );
             case 3:
                 return (
                     <DetailDependent
@@ -156,6 +171,13 @@ class EmployeeDialog extends Component {
             case 1:
                 break;
             case 2:
+                var grade = this.state.employee.gradeHistory;
+                if (grade.length > 0){
+                    grade.forEach ( grade => {
+                        if (grade.grade=="" )
+                            errorTextRequired = true;
+                        })
+                }
                 break;
             case 3:
                 var dependents = this.state.employee.dependents;
@@ -196,13 +218,13 @@ class EmployeeDialog extends Component {
         const title = [
             <Stepper key="Stepper" linear={true} activeStep={stepIndex}>
               <Step>
-                <StepLabel>Employee Detail</StepLabel>
+                <StepLabel>Detail</StepLabel>
               </Step>
               <Step>
-                <StepLabel>Grades History</StepLabel>
+                <StepLabel>History</StepLabel>
               </Step>
               <Step>
-                <StepLabel>Employment History</StepLabel>
+                <StepLabel>Grades</StepLabel>
               </Step>
               <Step>
                 <StepLabel>Dependents</StepLabel>

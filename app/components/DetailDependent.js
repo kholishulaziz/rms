@@ -98,7 +98,6 @@ class DetailDependent extends Component {
         this.handleUpdateDetailDependent(nextState.employee);
     }
 
-
     render() {
 
         var dependents = this.props.employee.dependents;

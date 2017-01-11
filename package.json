@@ -25,6 +25,7 @@
     "react": "^15.4.1",
     "react-addons-update": "^15.0.2",
     "react-dom": "^15.0.0",
+    "react-numeric-input": "^2.0.6",
     "react-redux": "^4.4.5",
     "react-search-input": "^0.10.3",
     "react-tap-event-plugin": "^2.0.1",

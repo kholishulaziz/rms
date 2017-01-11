@@ -24,6 +24,7 @@ class EmployeeTab extends Component {
             deleteDialogIsOpen: false,
             validationDialogIsOpen: false,
             viewMode: true,
+            gradeErrorTextRequired: '',
             depErrorTextRequired: '',
         }
     }
@@ -39,10 +40,10 @@ class EmployeeTab extends Component {
                 this.props.employee.firstName=="" || this.props.employee.lastName=="" || this.props.employee.gender==""
                 /*|| this.props.employee.dob=="" ||*/ || this.props.employee.phone=="" || this.props.employee.subDivision==""
                 || this.props.employee.grade=="" || this.props.employee.division=="" || this.props.employee.email==""
-
+                // Detail Grade History
+                || (this.checkGrade())
                 // Detail Dependents
-                || ( this.checkDependent() )
-
+                || ( this.checkDependent())
                 // Detail Location
                 || this.props.employee.office==""
                 ){
@@ -57,7 +58,8 @@ class EmployeeTab extends Component {
             this.props.setEmployees(employees);
             this.setState({
                 viewMode: true,
-                depErrorTextRequired: ''
+                gradeErrorTextRequired: '',
+                depErrorTextRequired: '',
             })
         }
     }
@@ -106,6 +108,21 @@ class EmployeeTab extends Component {
         this.setState({
             validationDialogIsOpen: false,
         });
+    }
+
+    checkGrade(){
+        var rtn = false;
+        var grade = this.props.employee.gradeHistory;
+
+        if (grade.length > 0){
+            grade.forEach ( grade => { if (grade.grade=="" )
+                rtn = true;
+                this.setState({
+                    gradeErrorTextRequired: "This field is required!"
+                })
+            })
+        }
+        return rtn;
     }
 
     checkDependent(){
@@ -165,7 +182,8 @@ class EmployeeTab extends Component {
                         <DetailGrade
                              employee={this.props.employee}
                              viewMode={this.state.viewMode}
-                             errorTextRequired={this.state.depErrorTextRequired}
+                             fromAddEmployee={false}
+                             errorTextRequired={this.state.gradeErrorTextRequired}
                              setCurrentEmployee={this.props.setCurrentEmployee.bind(this)}
                          />
                    </Tab>

@@ -21,6 +21,10 @@ const EmployeesData = [
             {name: "Aziz's Wife", dob: new Date(1991,3,1), gender: 'F', type: 'W', active: true},
             {name: "Aziz's Jr", dob: new Date(2017,3,1), gender: 'M', type: 'C', active: true},
         ],
+        gradeHistory:[
+            {startDate: new Date(1991,3,1), endDate: new Date(1991,3,3), grade: 'SE1', devStage: 1},
+            {startDate: new Date(1991,3,2), endDate: new Date(1991,4,3), grade: 'SE2', devStage: 4},
+        ]
     },
     {
         id: 'aldebaran_a',
@@ -43,6 +47,9 @@ const EmployeesData = [
         dependents: [
             {name: "Aldebaran's Wife", dob: new Date(1991,3,1), gender: 'F', type: 'W', active: false}
         ],
+        gradeHistory:[
+            {startDate: new Date(1991,3,1), endDate: new Object, grade: 'SE1', devStage: 2},
+        ]
     },
     {
         id: 'ricard_g',
@@ -63,6 +70,9 @@ const EmployeesData = [
         office: 'JKT',
         active: false,
         dependents: [],
+        gradeHistory:[
+            {startDate: new Date(1991,3,1), endDate: new Object, grade: 'SE4', devStage: 20},
+        ]
     },
     {
         id: 'mary_w',
@@ -83,6 +93,9 @@ const EmployeesData = [
         office: 'JKT',
         active: true,
         dependents: [],
+        gradeHistory:[
+            {startDate: new Date(1991,3,1), endDate: new Object, grade: 'SE4', devStage: 16},
+        ]
     },
     {
         id: 'emma_w',
@@ -103,6 +116,9 @@ const EmployeesData = [
         office: 'DPS',
         active: true,
         dependents: [],
+        gradeHistory:[
+            {startDate: new Date(1991,3,1), endDate: new Object, grade: 'SE1', devStage: 2},
+        ]
     },
     {
         id: 'paul_w',
@@ -123,6 +139,9 @@ const EmployeesData = [
         office: 'JOG',
         active: true,
         dependents: [],
+        gradeHistory:[
+            {startDate: new Date(1991,3,1), endDate: new Object, grade: 'SE3', devStage: 9},
+        ]
     },
     {
         id: 'dr_w',
@@ -143,7 +162,11 @@ const EmployeesData = [
         office: 'JOG',
         active: true,
         dependents: [],
+        gradeHistory:[
+            {startDate: new Date(1991,3,1), endDate: new Object, grade: 'SE3', devStage: 5},
+        ]
     },
+
     {
         id: 'johnny_w',
         firstName: 'Johnny',
@@ -163,6 +186,9 @@ const EmployeesData = [
         office: 'DPS',
         active: true,
         dependents: [],
+        gradeHistory:[
+            {startDate: new Date(1991,3,1), endDate: new Object, grade: 'SE2', devStage: 4},
+        ]
     },
     {
         id: 'sherry_w',
@@ -183,6 +209,9 @@ const EmployeesData = [
         office: 'BDG',
         active: false,
         dependents: [],
+        gradeHistory:[
+            {startDate: new Date(1991,3,1), endDate: new Object, grade: 'SE1', devStage: 1},
+        ]
     },
     {
         id: 'aziz_m',
@@ -203,6 +232,9 @@ const EmployeesData = [
         office: 'JOG',
         active: true,
         dependents: [],
+        gradeHistory:[
+            {startDate: new Date(1991,3,1), endDate: new Object, grade: 'SE3', devStage: 8},
+        ]
     },
 ];
 
